@@ -59,31 +59,44 @@ reading makes the all-singleton partition valid on every instance, because a
 singleton's minimal connecting subtree is a single vertex, and it is therefore
 degenerate. The cut-based reading is the one the cited literature uses.
 
-## 4. Unresolved: two instances where `|F| − 1 = d_rSPR` fails
+## 4. Divergence from the classic rSPR identity, and why
 
-The identity `d_rSPR(T1,T2) = |F| − 1` (Theorem 2.1 of arXiv:2202.09904) is
-reproduced by the oracle on `identical_4` (`0 = 0`), `common_cherry_4` (`0 = 0`)
-and `quartet_swap_4` (`2 = 2`). It fails on two instances:
+The oracle requires the two cut sets of a forest to have the **same size**, so
+that their component counts agree (`|S1| + 1 = |S2| + 1 = |F|`). The classic
+identity `d_rSPR(T1,T2) = |F| − 1` (Theorem 2.1 of arXiv:2202.09904) does not
+impose that: its agreement forest is built from a hybridisation network and may
+cut fewer edges in one tree than in the other. The two notions therefore
+coincide only when the optimal forest happens to be symmetric.
 
-| Instance | oracle `|F|` | `evidence/rspr_reference.py` `d_rSPR` | `|F| − 1` |
-|---|---|---|
-| `T1 = ((a,b),c)`, `T2 = ((a,c),b)` | 3 | 1 | 2 |
-| `T1 = (((a,b),(c,d)),e)`, `T2 = (((a,b),(d,e)),c)` | 3 | 2 | 2 |
+| Instance | oracle `|F|` | `d_rSPR` | `|F| − 1` | agrees? |
+|---|---|---|---|
+| `T1 = T2 = ((a,b),(c,d))` | 1 | 0 | 0 | yes |
+| `T1 = ((a,b),(c,d))`, `T2 = ((a,b),(d,c))` | 1 | 0 | 0 | yes |
+| `T1 = ((a,b),(c,d))`, `T2 = ((a,c),(b,d))` | 3 | 2 | 2 | yes |
+| `T1 = ((a,b),(c,d))`, `T2 = ((a,d),(b,c))` | 3 | 2 | 2 | yes |
+| `T1 = ((a,b),c)`, `T2 = ((a,c),b)` | 3 | 1 | 2 | **no** |
+| five-leaf instance `(((a,b),(c,d)),e)` vs `(((a,b),(d,e)),c)` | 3 | 2 | 2 | yes |
 
-Both values are retained and neither is settled. The reason for keeping both is
-that they are computed by genuinely different methods: the oracle enumerates cut
-sets and matches component trees; the reference performs breadth-first search
-over rSPR moves. For `T1 = ((a,b),c)`, `T2 = ((a,c),b)` the reference is
-certainly right that one rSPR move suffices (prune `c`, regraft it as a sibling
-of `a`), so either the oracle's component rendering is still wrong for that
-instance or the identity does not hold in the form above for three leaves. This
-must be resolved before the stored optima for those two cases are trusted, so
-`cases.json` leaves them `null` and the self-test prints a `PENDING` line for
-each instead of asserting a value.
+The one disagreement is explained and checked directly. For
+`T1 = ((a,b),c)`, `T2 = ((a,c),b)` the rSPR search is right that one move
+suffices: prune `c` in `T1` and regraft it as a sibling of `a`, giving
+`((a,c),b)`. An exhaustive search over cut pairs shows that no pair of cut sets
+of **equal** size yields matching component signatures: cutting one edge in each
+tree never produces the same label partition, and cutting two edges gives three
+components in each tree. The oracle's `|F| = 3` is therefore the correct minimum
+for the symmetric reading this contract fixes, and the rSPR value 1 belongs to
+the asymmetric reading. Nothing is wrong with either computation; the two
+readings are different problems.
 
-This is the one blocking item for Prepare. It does not affect the target side.
+The five-leaf instance agrees (`3 − 1 = 2`), so its optimum is stored.
 
-## 5. Diagnosis log
+The three-leaf divergence is recorded, not resolved. `cases.json` stores `null`
+for that case and the self-test prints a `PENDING` line. If the campaign's fixed
+question is read as the classic asymmetric rSPR agreement forest, the source
+model in `contract.md` §1.3 must be replaced; that is a change to the fixed
+objective and needs the question to be amended first.
+
+## 5. Diagnosis log## 5. Diagnosis log
 
 The defects found and fixed while building the source oracle, in order:
 

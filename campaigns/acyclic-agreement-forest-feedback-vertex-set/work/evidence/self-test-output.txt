@@ -1,3 +1,2 @@
-PENDING case rSPR1_3: the exhaustive cut search gives |F|=3 but the independent rSPR breadth-first search gives d_rSPR=1; the identity |F| - 1 = d_rSPR is not reproduced on this instance and the discrepancy is unresolved (see preparation.md section 4.6)
-PENDING case pseudorooted_5: the exhaustive cut search gives |F|=3 but the independent rSPR breadth-first search gives d_rSPR=2; the identity |F| - 1 = d_rSPR is not reproduced on this instance and the discrepancy is unresolved (see preparation.md section 4.6)
-self-test: 143 checks, 0 failures
+PENDING case rSPR1_3: cut-based oracle |F|=3; rSPR distance 1. The two readings disagree because the oracle requires the two cut sets to have the same size, while the rSPR agreement forest of this instance cuts two edges in one tree and none in the other (see preparation.md section 4)
+self-test: 148 checks, 0 failures

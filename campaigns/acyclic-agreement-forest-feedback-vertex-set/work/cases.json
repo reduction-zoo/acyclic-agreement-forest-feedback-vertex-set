@@ -495,7 +495,7 @@
    },
    "source_opt_components": null,
    "source_opt_solution_count": null,
-   "pending_reason": "the exhaustive cut search gives |F|=3 but the independent rSPR breadth-first search gives d_rSPR=1; the identity |F| - 1 = d_rSPR is not reproduced on this instance and the discrepancy is unresolved (see preparation.md section 4.6)"
+   "pending_reason": "cut-based oracle |F|=3; rSPR distance 1. The two readings disagree because the oracle requires the two cut sets to have the same size, while the rSPR agreement forest of this instance cuts two edges in one tree and none in the other (see preparation.md section 4)"
   },
   {
    "name": "quartet_swap_4",
@@ -863,9 +863,8 @@
      ]
     }
    },
-   "source_opt_components": null,
-   "source_opt_solution_count": null,
-   "pending_reason": "the exhaustive cut search gives |F|=3 but the independent rSPR breadth-first search gives d_rSPR=2; the identity |F| - 1 = d_rSPR is not reproduced on this instance and the discrepancy is unresolved (see preparation.md section 4.6)"
+   "source_opt_components": 3,
+   "source_opt_solution_count": 1
   }
  ],
  "target_fixtures": {
