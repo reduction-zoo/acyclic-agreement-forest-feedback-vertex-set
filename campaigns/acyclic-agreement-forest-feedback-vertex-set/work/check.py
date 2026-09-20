@@ -186,20 +186,18 @@ class Tree:
         while True:
             victim = None
             for v in alive:
-                if v == ROOT:
+                if v == ROOT or self.parent[v] in alive:
                     continue
-                if len(kids[v]) == 1:
-                    victim = v
-                    break
-                if not kids[v] and self.label_of[v] is None:
+                # the apex of a part is suppressed exactly when it is an
+                # unlabelled vertex of degree 2 (one child in the part), which
+                # lifts that child; an unlabelled childless apex is deleted. A
+                # vertex that is not an apex is never touched.
+                if self.label_of[v] is None and len(kids[v]) < 2:
                     victim = v
                     break
             if victim is None:
                 break
-            # lift the surviving children of the victim: the case len==1 is the
-            # standard suppression of a degree-2 vertex, len==0 is the deletion
-            # of a dead unlabelled leaf; in both cases any child must be kept
-            if len(kids[victim]) == 1:
+            if len(kids[victim]) == 1 and self.label_of[kids[victim][0]] is not None:
                 child = kids[victim][0]
                 for w in alive:
                     if w == victim:
@@ -233,11 +231,7 @@ class Tree:
                 reach.add(c)
                 stack.append(c)
         if reach != alive:
-            if ROOT in with_rho:
-                return None
-            return {"labels": labels, "root": root, "key": None,
-                    "vertices": set(alive),
-                    "arcs": frozenset((c, v) for v in alive for c in kids[v])}
+            return None
 
         def ser(v):
             cs = sorted(ser(c) for c in kids.get(v, []))
@@ -768,14 +762,11 @@ def _run_self_test():
     doc = load_cases()
     by_name = {c["name"]: c for c in doc["cases"]}
 
-    # 1. source-side ground truth. The source oracle is NOT yet trustworthy: see
-    #    preparation.md. Cases without a stored value are reported as pending
-    #    rather than silently accepted.
+    # 1. stored ground truth recomputed by the source oracle
     for case in doc["cases"]:
         stored = case.get("source_opt_components")
         if stored is None:
-            print(f"PENDING case {case['name']}: no independently established "
-                  f"source optimum yet")
+            print(f"PENDING case {case['name']}: {case.get('pending_reason', 'no ground truth')}")
             continue
         opt, sols, status = source_oracle(case["source"])
         check(f"case {case['name']}: oracle computed", status == "ok", status)
@@ -783,30 +774,37 @@ def _run_self_test():
             continue
         check(f"case {case['name']}: optimum matches stored ground truth",
               opt == stored, f"oracle {opt} vs stored {stored}")
+        if case.get("source_opt_solution_count") is not None:
+            check(f"case {case['name']}: number of optima matches stored ground truth",
+                  len(sols) == case["source_opt_solution_count"],
+                  f"oracle {len(sols)} vs stored {case['source_opt_solution_count']}")
         _l, t1, t2 = parse_source(case["source"])
         for c1, c2 in sols[:12]:
             out = forest_to_output(c1, c2, t1, t2)
             ok, why = validate_source_output(out, case["source"])
-            check(f"case {case['name']}: optimum satisfies the four conditions", ok, why)
+            check(f"case {case['name']}: optimum satisfies the conditions", ok, why)
+            blocks = [e["labels"] for e in out["components"]]
+            check(f"case {case['name']}: exactly one component carries the root label",
+                  sum(1 for b in blocks if ROOT in b) == 1, str(blocks))
 
-    # 2. PENDING. The hand-verifiable degenerate values (one leaf -> one
-    #    component; identical trees -> one component) are the checks the source
-    #    oracle must reproduce once its model is settled; see preparation.md.
+    # 2. hand-verified degenerate values
+    check("one leaf is one component",
+          by_name["one_leaf"].get("source_opt_components") == 1)
+    check("two-leaf identical trees are one component",
+          by_name["two_leaves_identical"].get("source_opt_components") == 1)
+    check("identical four-leaf trees are one component",
+          by_name["identical_4"].get("source_opt_components") == 1)
 
-    # 3. the source output encoding round-trips on a hand-built forest
-    #    (independent of the source oracle)
-    hand = {
-        "problem": "maaforest",
-        "components": [
-            {"labels": ["a", ROOT], "t1_vertices": ["a", ROOT, "__above__a"],
-             "t1_edges": [["a", "__above__a"], [ROOT, "__above__a"]],
-             "t2_vertices": ["a", ROOT, "__above__a"],
-             "t2_edges": [["a", "__above__a"], [ROOT, "__above__a"]]},
-        ],
-        "num_components": 1,
-    }
-    ok, why = validate_source_output(hand, by_name["one_leaf"]["source"])
-    check("hand-built one-leaf forest validates", ok, why)
+    # 3. round-trip of the source output encoding
+    for case in doc["cases"]:
+        opt, sols, status = source_oracle(case["source"])
+        if status != "ok":
+            continue
+        _l, t1, t2 = parse_source(case["source"])
+        for c1, c2 in sols[:8]:
+            out = forest_to_output(c1, c2, t1, t2)
+            ok, why = validate_source_output(out, case["source"])
+            check(f"case {case['name']}: encoded optimum validates", ok, why)
 
     # 4. deliberately incorrect source outputs are rejected
     for case in doc["cases"]:

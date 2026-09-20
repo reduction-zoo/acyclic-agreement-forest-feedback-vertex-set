@@ -1,10 +1,3 @@
-PENDING case one_leaf: no independently established source optimum yet
-PENDING case two_leaves_identical: no independently established source optimum yet
-PENDING case three_leaves_identical: no independently established source optimum yet
-PENDING case identical_4: no independently established source optimum yet
-PENDING case common_cherry_4: no independently established source optimum yet
-PENDING case rSPR1_3: no independently established source optimum yet
-PENDING case quartet_swap_4: no independently established source optimum yet
-PENDING case quartet_swap_other_4: no independently established source optimum yet
-PENDING case pseudorooted_5: no independently established source optimum yet
-self-test: 91 checks, 0 failures
+PENDING case rSPR1_3: the exhaustive cut search gives |F|=3 but the independent rSPR breadth-first search gives d_rSPR=1; the identity |F| - 1 = d_rSPR is not reproduced on this instance and the discrepancy is unresolved (see preparation.md section 4.6)
+PENDING case pseudorooted_5: the exhaustive cut search gives |F|=3 but the independent rSPR breadth-first search gives d_rSPR=2; the identity |F| - 1 = d_rSPR is not reproduced on this instance and the discrepancy is unresolved (see preparation.md section 4.6)
+self-test: 143 checks, 0 failures

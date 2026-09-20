@@ -44,8 +44,10 @@ relying on this table.
 | — | none started | — | — | — |
 
 No research round has been opened. The budget is 3; used 0, remaining 3; distinct
-mechanisms attempted 0. Prepare was executed and is **incomplete**: the target
-testing foundation is complete, the source testing foundation is pending. Per the
+mechanisms attempted 0. Prepare was executed and is **nearly complete**: both
+oracles exist and run, seven source optima are established and validated, and two
+instances are disputed between the cut search and the independent rSPR
+cross-check. Per the
 session skill, preparation and routine implementation stay with the work they
 serve and do not consume a research round; the source-model investigation was
 infrastructure, not a construction hypothesis. No candidate was constructed.
@@ -65,9 +67,10 @@ infrastructure, not a construction hypothesis. No candidate was constructed.
 
 ## Checks
 
-- `python3 check.py --self-test` — 91 checks, 0 failures; retained in
-  `work/evidence/self-test-output.txt`. Every source case is reported `PENDING`
-  because no source optimum is established yet.
+- `python3 check.py --self-test` — 143 checks, 0 failures; retained in
+  `work/evidence/self-test-output.txt`. Seven source optima are stored and
+  asserted; two are reported `PENDING` because they are disputed (see
+  `work/preparation.md` section 4).
 - Target-side oracle validated on 30 seeded random digraphs (exhaustive subset
   enumeration agrees with the Z3 decision oracle; every returned set passes the
   explicit Kahn check) and on the deliberate valid/invalid fixtures.
@@ -86,17 +89,14 @@ preset), and it will be used when a candidate and its proof exist.
 Finish [Prepare](../../.agents/skills/research-prepare/SKILL.md) before
 constructing anything:
 
-1. Fix the component rendering in `check.py` (a part's apex must be suppressed
-   when it is an unlabelled degree-2 vertex, lifting its child), then cross-check
-   the repaired source oracle against the independently computed values in
-   `work/preparation.md` §5.
-2. Repair `work/evidence/agreement_forest_reference.py` so it is genuinely
-   independent of the oracle, and resolve the five-leaf discrepancy recorded in
-   `work/preparation.md` §4.6.
-3. Restore the stored source optima in `work/cases.json` and make
-   `check.py --self-test` assert them.
-
-The source model question in `work/contract.md` §6 must be settled as part of
-step 1: the cut-based reading and the minimal-subtree reading disagree on small
-instances, and the campaign must not construct a candidate while the source
-objective is ambiguous. Per the harness authorisation, no round was consumed.
+1. Settle the two disputed source optima recorded in `work/preparation.md`
+   section 4: for `T1 = ((a,b),c)`, `T2 = ((a,c),b)` the oracle reports `|F| = 3`
+   while the independent rSPR search reports `d_rSPR = 1`; the same identity
+   fails on the five-leaf instance. Decide whether the oracle's rendering is
+   still wrong there or whether the cross-check identity has a different form,
+   then store the two missing optima in `work/cases.json`.
+2. Repair `work/evidence/agreement_forest_reference.py` so that it is genuinely
+   independent of the oracle rather than reusing its rendering idea.
+3. Only then begin Propose. Per the session skill, preparation does not consume a
+   research round: the round table stands at 0 used of 3, and no candidate has
+   been constructed.

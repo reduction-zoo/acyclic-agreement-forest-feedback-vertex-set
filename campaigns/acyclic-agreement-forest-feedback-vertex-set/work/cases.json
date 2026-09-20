@@ -31,8 +31,8 @@
      ]
     }
    },
-   "source_opt_components": null,
-   "source_opt_solution_count": null
+   "source_opt_components": 1,
+   "source_opt_solution_count": 1
   },
   {
    "name": "two_leaves_identical",
@@ -91,8 +91,8 @@
      ]
     }
    },
-   "source_opt_components": null,
-   "source_opt_solution_count": null
+   "source_opt_components": 1,
+   "source_opt_solution_count": 1
   },
   {
    "name": "three_leaves_identical",
@@ -178,8 +178,8 @@
      ]
     }
    },
-   "source_opt_components": null,
-   "source_opt_solution_count": null
+   "source_opt_components": 1,
+   "source_opt_solution_count": 1
   },
   {
    "name": "identical_4",
@@ -292,8 +292,8 @@
      ]
     }
    },
-   "source_opt_components": null,
-   "source_opt_solution_count": null
+   "source_opt_components": 1,
+   "source_opt_solution_count": 1
   },
   {
    "name": "common_cherry_4",
@@ -406,8 +406,8 @@
      ]
     }
    },
-   "source_opt_components": null,
-   "source_opt_solution_count": null
+   "source_opt_components": 1,
+   "source_opt_solution_count": 1
   },
   {
    "name": "rSPR1_3",
@@ -494,7 +494,8 @@
     }
    },
    "source_opt_components": null,
-   "source_opt_solution_count": null
+   "source_opt_solution_count": null,
+   "pending_reason": "the exhaustive cut search gives |F|=3 but the independent rSPR breadth-first search gives d_rSPR=1; the identity |F| - 1 = d_rSPR is not reproduced on this instance and the discrepancy is unresolved (see preparation.md section 4.6)"
   },
   {
    "name": "quartet_swap_4",
@@ -607,8 +608,8 @@
      ]
     }
    },
-   "source_opt_components": null,
-   "source_opt_solution_count": null
+   "source_opt_components": 3,
+   "source_opt_solution_count": 2
   },
   {
    "name": "quartet_swap_other_4",
@@ -721,8 +722,8 @@
      ]
     }
    },
-   "source_opt_components": null,
-   "source_opt_solution_count": null
+   "source_opt_components": 3,
+   "source_opt_solution_count": 2
   },
   {
    "name": "pseudorooted_5",
@@ -863,7 +864,8 @@
     }
    },
    "source_opt_components": null,
-   "source_opt_solution_count": null
+   "source_opt_solution_count": null,
+   "pending_reason": "the exhaustive cut search gives |F|=3 but the independent rSPR breadth-first search gives d_rSPR=2; the identity |F| - 1 = d_rSPR is not reproduced on this instance and the discrepancy is unresolved (see preparation.md section 4.6)"
   }
  ],
  "target_fixtures": {
