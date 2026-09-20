@@ -1,0 +1,1054 @@
+{
+ "note": "Ground truth established by exhaustive enumeration of cut sets over both trees (check.py source_oracle), cross-checked by evidence/agreement_forest_reference.py and against the rSPR distance in evidence/rspr_reference.py.",
+ "cases": [
+  {
+   "name": "one_leaf",
+   "description": "degenerate: a single leaf, the whole tree is one component",
+   "source": {
+    "problem": "maaforest",
+    "labels": [
+     "a"
+    ],
+    "root_label": "\u03c1",
+    "t1": {
+     "root": "a",
+     "nodes": [
+      {
+       "id": "a",
+       "label": "a",
+       "children": []
+      }
+     ]
+    },
+    "t2": {
+     "root": "a",
+     "nodes": [
+      {
+       "id": "a",
+       "label": "a",
+       "children": []
+      }
+     ]
+    }
+   },
+   "source_opt_components": null,
+   "source_opt_solution_count": null
+  },
+  {
+   "name": "two_leaves_identical",
+   "description": "degenerate: two leaves, identical trees",
+   "source": {
+    "problem": "maaforest",
+    "labels": [
+     "a",
+     "b"
+    ],
+    "root_label": "\u03c1",
+    "t1": {
+     "root": "n3",
+     "nodes": [
+      {
+       "id": "a",
+       "label": "a",
+       "children": []
+      },
+      {
+       "id": "b",
+       "label": "b",
+       "children": []
+      },
+      {
+       "id": "n3",
+       "label": null,
+       "children": [
+        "a",
+        "b"
+       ]
+      }
+     ]
+    },
+    "t2": {
+     "root": "n3",
+     "nodes": [
+      {
+       "id": "a",
+       "label": "a",
+       "children": []
+      },
+      {
+       "id": "b",
+       "label": "b",
+       "children": []
+      },
+      {
+       "id": "n3",
+       "label": null,
+       "children": [
+        "a",
+        "b"
+       ]
+      }
+     ]
+    }
+   },
+   "source_opt_components": null,
+   "source_opt_solution_count": null
+  },
+  {
+   "name": "three_leaves_identical",
+   "description": "identical trees with an internal structure",
+   "source": {
+    "problem": "maaforest",
+    "labels": [
+     "a",
+     "b",
+     "c"
+    ],
+    "root_label": "\u03c1",
+    "t1": {
+     "root": "n5",
+     "nodes": [
+      {
+       "id": "a",
+       "label": "a",
+       "children": []
+      },
+      {
+       "id": "b",
+       "label": "b",
+       "children": []
+      },
+      {
+       "id": "n3",
+       "label": null,
+       "children": [
+        "a",
+        "b"
+       ]
+      },
+      {
+       "id": "c",
+       "label": "c",
+       "children": []
+      },
+      {
+       "id": "n5",
+       "label": null,
+       "children": [
+        "n3",
+        "c"
+       ]
+      }
+     ]
+    },
+    "t2": {
+     "root": "n5",
+     "nodes": [
+      {
+       "id": "a",
+       "label": "a",
+       "children": []
+      },
+      {
+       "id": "b",
+       "label": "b",
+       "children": []
+      },
+      {
+       "id": "n3",
+       "label": null,
+       "children": [
+        "a",
+        "b"
+       ]
+      },
+      {
+       "id": "c",
+       "label": "c",
+       "children": []
+      },
+      {
+       "id": "n5",
+       "label": null,
+       "children": [
+        "n3",
+        "c"
+       ]
+      }
+     ]
+    }
+   },
+   "source_opt_components": null,
+   "source_opt_solution_count": null
+  },
+  {
+   "name": "identical_4",
+   "description": "identical four-leaf trees, one component",
+   "source": {
+    "problem": "maaforest",
+    "labels": [
+     "a",
+     "b",
+     "c",
+     "d"
+    ],
+    "root_label": "\u03c1",
+    "t1": {
+     "root": "n7",
+     "nodes": [
+      {
+       "id": "a",
+       "label": "a",
+       "children": []
+      },
+      {
+       "id": "b",
+       "label": "b",
+       "children": []
+      },
+      {
+       "id": "n3",
+       "label": null,
+       "children": [
+        "a",
+        "b"
+       ]
+      },
+      {
+       "id": "c",
+       "label": "c",
+       "children": []
+      },
+      {
+       "id": "d",
+       "label": "d",
+       "children": []
+      },
+      {
+       "id": "n6",
+       "label": null,
+       "children": [
+        "c",
+        "d"
+       ]
+      },
+      {
+       "id": "n7",
+       "label": null,
+       "children": [
+        "n3",
+        "n6"
+       ]
+      }
+     ]
+    },
+    "t2": {
+     "root": "n7",
+     "nodes": [
+      {
+       "id": "a",
+       "label": "a",
+       "children": []
+      },
+      {
+       "id": "b",
+       "label": "b",
+       "children": []
+      },
+      {
+       "id": "n3",
+       "label": null,
+       "children": [
+        "a",
+        "b"
+       ]
+      },
+      {
+       "id": "c",
+       "label": "c",
+       "children": []
+      },
+      {
+       "id": "d",
+       "label": "d",
+       "children": []
+      },
+      {
+       "id": "n6",
+       "label": null,
+       "children": [
+        "c",
+        "d"
+       ]
+      },
+      {
+       "id": "n7",
+       "label": null,
+       "children": [
+        "n3",
+        "n6"
+       ]
+      }
+     ]
+    }
+   },
+   "source_opt_components": null,
+   "source_opt_solution_count": null
+  },
+  {
+   "name": "common_cherry_4",
+   "description": "trees that agree on every cherry",
+   "source": {
+    "problem": "maaforest",
+    "labels": [
+     "a",
+     "b",
+     "c",
+     "d"
+    ],
+    "root_label": "\u03c1",
+    "t1": {
+     "root": "n7",
+     "nodes": [
+      {
+       "id": "a",
+       "label": "a",
+       "children": []
+      },
+      {
+       "id": "b",
+       "label": "b",
+       "children": []
+      },
+      {
+       "id": "n3",
+       "label": null,
+       "children": [
+        "a",
+        "b"
+       ]
+      },
+      {
+       "id": "c",
+       "label": "c",
+       "children": []
+      },
+      {
+       "id": "d",
+       "label": "d",
+       "children": []
+      },
+      {
+       "id": "n6",
+       "label": null,
+       "children": [
+        "c",
+        "d"
+       ]
+      },
+      {
+       "id": "n7",
+       "label": null,
+       "children": [
+        "n3",
+        "n6"
+       ]
+      }
+     ]
+    },
+    "t2": {
+     "root": "n7",
+     "nodes": [
+      {
+       "id": "a",
+       "label": "a",
+       "children": []
+      },
+      {
+       "id": "b",
+       "label": "b",
+       "children": []
+      },
+      {
+       "id": "n3",
+       "label": null,
+       "children": [
+        "a",
+        "b"
+       ]
+      },
+      {
+       "id": "d",
+       "label": "d",
+       "children": []
+      },
+      {
+       "id": "c",
+       "label": "c",
+       "children": []
+      },
+      {
+       "id": "n6",
+       "label": null,
+       "children": [
+        "d",
+        "c"
+       ]
+      },
+      {
+       "id": "n7",
+       "label": null,
+       "children": [
+        "n3",
+        "n6"
+       ]
+      }
+     ]
+    }
+   },
+   "source_opt_components": null,
+   "source_opt_solution_count": null
+  },
+  {
+   "name": "rSPR1_3",
+   "description": "three leaves one rSPR move apart",
+   "source": {
+    "problem": "maaforest",
+    "labels": [
+     "a",
+     "b",
+     "c"
+    ],
+    "root_label": "\u03c1",
+    "t1": {
+     "root": "n5",
+     "nodes": [
+      {
+       "id": "a",
+       "label": "a",
+       "children": []
+      },
+      {
+       "id": "b",
+       "label": "b",
+       "children": []
+      },
+      {
+       "id": "n3",
+       "label": null,
+       "children": [
+        "a",
+        "b"
+       ]
+      },
+      {
+       "id": "c",
+       "label": "c",
+       "children": []
+      },
+      {
+       "id": "n5",
+       "label": null,
+       "children": [
+        "n3",
+        "c"
+       ]
+      }
+     ]
+    },
+    "t2": {
+     "root": "n5",
+     "nodes": [
+      {
+       "id": "a",
+       "label": "a",
+       "children": []
+      },
+      {
+       "id": "c",
+       "label": "c",
+       "children": []
+      },
+      {
+       "id": "n3",
+       "label": null,
+       "children": [
+        "a",
+        "c"
+       ]
+      },
+      {
+       "id": "b",
+       "label": "b",
+       "children": []
+      },
+      {
+       "id": "n5",
+       "label": null,
+       "children": [
+        "n3",
+        "b"
+       ]
+      }
+     ]
+    }
+   },
+   "source_opt_components": null,
+   "source_opt_solution_count": null
+  },
+  {
+   "name": "quartet_swap_4",
+   "description": "the quartet swap; two optima, no coarser forest",
+   "source": {
+    "problem": "maaforest",
+    "labels": [
+     "a",
+     "b",
+     "c",
+     "d"
+    ],
+    "root_label": "\u03c1",
+    "t1": {
+     "root": "n7",
+     "nodes": [
+      {
+       "id": "a",
+       "label": "a",
+       "children": []
+      },
+      {
+       "id": "b",
+       "label": "b",
+       "children": []
+      },
+      {
+       "id": "n3",
+       "label": null,
+       "children": [
+        "a",
+        "b"
+       ]
+      },
+      {
+       "id": "c",
+       "label": "c",
+       "children": []
+      },
+      {
+       "id": "d",
+       "label": "d",
+       "children": []
+      },
+      {
+       "id": "n6",
+       "label": null,
+       "children": [
+        "c",
+        "d"
+       ]
+      },
+      {
+       "id": "n7",
+       "label": null,
+       "children": [
+        "n3",
+        "n6"
+       ]
+      }
+     ]
+    },
+    "t2": {
+     "root": "n7",
+     "nodes": [
+      {
+       "id": "a",
+       "label": "a",
+       "children": []
+      },
+      {
+       "id": "c",
+       "label": "c",
+       "children": []
+      },
+      {
+       "id": "n3",
+       "label": null,
+       "children": [
+        "a",
+        "c"
+       ]
+      },
+      {
+       "id": "b",
+       "label": "b",
+       "children": []
+      },
+      {
+       "id": "d",
+       "label": "d",
+       "children": []
+      },
+      {
+       "id": "n6",
+       "label": null,
+       "children": [
+        "b",
+        "d"
+       ]
+      },
+      {
+       "id": "n7",
+       "label": null,
+       "children": [
+        "n3",
+        "n6"
+       ]
+      }
+     ]
+    }
+   },
+   "source_opt_components": null,
+   "source_opt_solution_count": null
+  },
+  {
+   "name": "quartet_swap_other_4",
+   "description": "the mirror quartet swap",
+   "source": {
+    "problem": "maaforest",
+    "labels": [
+     "a",
+     "b",
+     "c",
+     "d"
+    ],
+    "root_label": "\u03c1",
+    "t1": {
+     "root": "n7",
+     "nodes": [
+      {
+       "id": "a",
+       "label": "a",
+       "children": []
+      },
+      {
+       "id": "b",
+       "label": "b",
+       "children": []
+      },
+      {
+       "id": "n3",
+       "label": null,
+       "children": [
+        "a",
+        "b"
+       ]
+      },
+      {
+       "id": "c",
+       "label": "c",
+       "children": []
+      },
+      {
+       "id": "d",
+       "label": "d",
+       "children": []
+      },
+      {
+       "id": "n6",
+       "label": null,
+       "children": [
+        "c",
+        "d"
+       ]
+      },
+      {
+       "id": "n7",
+       "label": null,
+       "children": [
+        "n3",
+        "n6"
+       ]
+      }
+     ]
+    },
+    "t2": {
+     "root": "n7",
+     "nodes": [
+      {
+       "id": "a",
+       "label": "a",
+       "children": []
+      },
+      {
+       "id": "d",
+       "label": "d",
+       "children": []
+      },
+      {
+       "id": "n3",
+       "label": null,
+       "children": [
+        "a",
+        "d"
+       ]
+      },
+      {
+       "id": "b",
+       "label": "b",
+       "children": []
+      },
+      {
+       "id": "c",
+       "label": "c",
+       "children": []
+      },
+      {
+       "id": "n6",
+       "label": null,
+       "children": [
+        "b",
+        "c"
+       ]
+      },
+      {
+       "id": "n7",
+       "label": null,
+       "children": [
+        "n3",
+        "n6"
+       ]
+      }
+     ]
+    }
+   },
+   "source_opt_components": null,
+   "source_opt_solution_count": null
+  },
+  {
+   "name": "pseudorooted_5",
+   "description": "five leaves, two rSPR moves apart",
+   "source": {
+    "problem": "maaforest",
+    "labels": [
+     "a",
+     "b",
+     "c",
+     "d",
+     "e"
+    ],
+    "root_label": "\u03c1",
+    "t1": {
+     "root": "n9",
+     "nodes": [
+      {
+       "id": "a",
+       "label": "a",
+       "children": []
+      },
+      {
+       "id": "b",
+       "label": "b",
+       "children": []
+      },
+      {
+       "id": "n3",
+       "label": null,
+       "children": [
+        "a",
+        "b"
+       ]
+      },
+      {
+       "id": "c",
+       "label": "c",
+       "children": []
+      },
+      {
+       "id": "d",
+       "label": "d",
+       "children": []
+      },
+      {
+       "id": "n6",
+       "label": null,
+       "children": [
+        "c",
+        "d"
+       ]
+      },
+      {
+       "id": "n7",
+       "label": null,
+       "children": [
+        "n3",
+        "n6"
+       ]
+      },
+      {
+       "id": "e",
+       "label": "e",
+       "children": []
+      },
+      {
+       "id": "n9",
+       "label": null,
+       "children": [
+        "n7",
+        "e"
+       ]
+      }
+     ]
+    },
+    "t2": {
+     "root": "n9",
+     "nodes": [
+      {
+       "id": "a",
+       "label": "a",
+       "children": []
+      },
+      {
+       "id": "b",
+       "label": "b",
+       "children": []
+      },
+      {
+       "id": "n3",
+       "label": null,
+       "children": [
+        "a",
+        "b"
+       ]
+      },
+      {
+       "id": "d",
+       "label": "d",
+       "children": []
+      },
+      {
+       "id": "e",
+       "label": "e",
+       "children": []
+      },
+      {
+       "id": "n6",
+       "label": null,
+       "children": [
+        "d",
+        "e"
+       ]
+      },
+      {
+       "id": "n7",
+       "label": null,
+       "children": [
+        "n3",
+        "n6"
+       ]
+      },
+      {
+       "id": "c",
+       "label": "c",
+       "children": []
+      },
+      {
+       "id": "n9",
+       "label": null,
+       "children": [
+        "n7",
+        "c"
+       ]
+      }
+     ]
+    }
+   },
+   "source_opt_components": null,
+   "source_opt_solution_count": null
+  }
+ ],
+ "target_fixtures": {
+  "valid": [
+   {
+    "why": "an acyclic digraph; the empty set is optimal",
+    "instance": {
+     "problem": "dfvs",
+     "vertices": [
+      "v0",
+      "v1",
+      "v2"
+     ],
+     "arcs": [
+      [
+       "v0",
+       "v1"
+      ],
+      [
+       "v1",
+       "v2"
+      ]
+     ]
+    },
+    "set": []
+   },
+   {
+    "why": "one vertex of a directed triangle",
+    "instance": {
+     "problem": "dfvs",
+     "vertices": [
+      "v0",
+      "v1",
+      "v2"
+     ],
+     "arcs": [
+      [
+       "v0",
+       "v1"
+      ],
+      [
+       "v1",
+       "v2"
+      ],
+      [
+       "v2",
+       "v0"
+      ]
+     ]
+    },
+    "set": [
+     "v1"
+    ]
+   },
+   {
+    "why": "one vertex of a two-cycle",
+    "instance": {
+     "problem": "dfvs",
+     "vertices": [
+      "v0",
+      "v1"
+     ],
+     "arcs": [
+      [
+       "v0",
+       "v1"
+      ],
+      [
+       "v1",
+       "v0"
+      ]
+     ]
+    },
+    "set": [
+     "v1"
+    ]
+   },
+   {
+    "why": "every vertex of a self-loop",
+    "instance": {
+     "problem": "dfvs",
+     "vertices": [
+      "v0"
+     ],
+     "arcs": [
+      [
+       "v0",
+       "v0"
+      ]
+     ]
+    },
+    "set": [
+     "v0"
+    ]
+   }
+  ],
+  "invalid": [
+   {
+    "why": "the set leaves the directed triangle intact",
+    "instance": {
+     "problem": "dfvs",
+     "vertices": [
+      "v0",
+      "v1",
+      "v2"
+     ],
+     "arcs": [
+      [
+       "v0",
+       "v1"
+      ],
+      [
+       "v1",
+       "v2"
+      ],
+      [
+       "v2",
+       "v0"
+      ]
+     ]
+    },
+    "set": [
+     "v3"
+    ]
+   },
+   {
+    "why": "a vertex that is not declared",
+    "instance": {
+     "problem": "dfvs",
+     "vertices": [
+      "v0",
+      "v1"
+     ],
+     "arcs": [
+      [
+       "v0",
+       "v1"
+      ]
+     ]
+    },
+    "set": [
+     "v9"
+    ]
+   },
+   {
+    "why": "a repeated vertex",
+    "instance": {
+     "problem": "dfvs",
+     "vertices": [
+      "v0",
+      "v1"
+     ],
+     "arcs": [
+      [
+       "v0",
+       "v1"
+      ]
+     ]
+    },
+    "set": [
+     "v0",
+     "v0"
+    ]
+   },
+   {
+    "why": "does not break the cycle",
+    "instance": {
+     "problem": "dfvs",
+     "vertices": [
+      "v0",
+      "v1"
+     ],
+     "arcs": [
+      [
+       "v0",
+       "v1"
+      ],
+      [
+       "v1",
+       "v0"
+      ]
+     ]
+    },
+    "set": []
+   }
+  ]
+ }
+}

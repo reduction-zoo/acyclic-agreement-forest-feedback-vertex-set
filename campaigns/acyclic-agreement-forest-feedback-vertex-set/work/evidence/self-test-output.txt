@@ -1,0 +1,10 @@
+PENDING case one_leaf: no independently established source optimum yet
+PENDING case two_leaves_identical: no independently established source optimum yet
+PENDING case three_leaves_identical: no independently established source optimum yet
+PENDING case identical_4: no independently established source optimum yet
+PENDING case common_cherry_4: no independently established source optimum yet
+PENDING case rSPR1_3: no independently established source optimum yet
+PENDING case quartet_swap_4: no independently established source optimum yet
+PENDING case quartet_swap_other_4: no independently established source optimum yet
+PENDING case pseudorooted_5: no independently established source optimum yet
+self-test: 91 checks, 0 failures

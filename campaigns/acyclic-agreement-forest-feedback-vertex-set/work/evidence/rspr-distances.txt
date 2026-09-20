@@ -1,0 +1,5 @@
+quartet swap     rSPR distance = 2   (((a,b),(c,d)) -> ((a,c),(b,d)))
+quartet other    rSPR distance = 2   (((a,b),(c,d)) -> ((a,d),(b,c)))
+n3 rSPR1         rSPR distance = 1   (((a,b),c) -> ((a,c),b))
+identical4       rSPR distance = 0   (((a,b),(c,d)) -> ((a,b),(c,d)))
+n5 example       rSPR distance = 2   ((((a,b),(c,d)),e) -> (((a,b),(d,e)),c))

@@ -43,16 +43,21 @@ relying on this table.
 |---|---|---|---|---|
 | — | none started | — | — | — |
 
-No round has been opened. The budget is 3; used 0, remaining 3; distinct
-mechanisms attempted 0. A round starts when a construction hypothesis, proof
-strategy or standalone literature investigation is committed to; preparation and
-routine implementation stay with the work they serve.
+No research round has been opened. The budget is 3; used 0, remaining 3; distinct
+mechanisms attempted 0. Prepare was executed and is **incomplete**: the target
+testing foundation is complete, the source testing foundation is pending. Per the
+session skill, preparation and routine implementation stay with the work they
+serve and do not consume a research round; the source-model investigation was
+infrastructure, not a construction hypothesis. No candidate was constructed.
 
 ## Artifacts
 
-- `question.md` fixed; no `work/`, `rounds/`, `reviews/` or `formal/` content
-  exists yet. No `pyproject.toml` or `uv.lock` yet; they are added when the testing
-  foundation first uses Python.
+- `question.md` fixed. `work/contract.md`, `work/cases.json`, `work/check.py`,
+  `work/preparation.md` and `work/evidence/` now exist (Prepare, partial).
+- No `rounds/`, `reviews/` or `formal/` content. No `pyproject.toml` or
+  `uv.lock`: `check.py` uses only the standard library plus the environment's Z3,
+  so no Python project has been created yet; add one when the foundation first
+  needs a locked dependency.
 - Copied into this repository with relative paths intact: `.agents/skills/`
   (research skills and `find-open-problems`), `research/` specifications except
   the board-local `research/experience/entries/` collection, `harness/` and
@@ -60,21 +65,38 @@ routine implementation stay with the work they serve.
 
 ## Checks
 
-None. Nothing has been built or executed; the initial commit precedes any test,
-construction search or proof attempt, as the repository standard requires.
+- `python3 check.py --self-test` — 91 checks, 0 failures; retained in
+  `work/evidence/self-test-output.txt`. Every source case is reported `PENDING`
+  because no source optimum is established yet.
+- Target-side oracle validated on 30 seeded random digraphs (exhaustive subset
+  enumeration agrees with the Z3 decision oracle; every returned set passes the
+  explicit Kahn check) and on the deliberate valid/invalid fixtures.
+- `python3 evidence/rspr_reference.py` — independent rSPR distances; retained in
+  `work/evidence/rspr-distances.txt`.
+- No candidate exists, so `--candidate` has never been run.
 
 ## Review
 
-None. No candidate exists, and the launching session could not mount the
-registered independent reviewer.
+None. No candidate exists, so there is nothing to review. The registered
+independent reviewer is mounted in this session (the session runs the `research`
+preset), and it will be used when a candidate and its proof exist.
 
 ## Next action
 
-Continue with the [Prepare](../../.agents/skills/research-prepare/SKILL.md) stage
-in a session whose workspace is this repository and which is started on the
-`research` agent preset: read `README.md`, `AGENTS.md` and
-`campaigns/acyclic-agreement-forest-feedback-vertex-set/{question,state}.md`, fix
-the JSON encodings for both endpoints in `work/contract.md`, and build
-self-tested, independent oracles for minimum-component acyclic agreement forests
-and minimum-cardinality directed feedback vertex sets before constructing any
-candidate.
+Finish [Prepare](../../.agents/skills/research-prepare/SKILL.md) before
+constructing anything:
+
+1. Fix the component rendering in `check.py` (a part's apex must be suppressed
+   when it is an unlabelled degree-2 vertex, lifting its child), then cross-check
+   the repaired source oracle against the independently computed values in
+   `work/preparation.md` §5.
+2. Repair `work/evidence/agreement_forest_reference.py` so it is genuinely
+   independent of the oracle, and resolve the five-leaf discrepancy recorded in
+   `work/preparation.md` §4.6.
+3. Restore the stored source optima in `work/cases.json` and make
+   `check.py --self-test` assert them.
+
+The source model question in `work/contract.md` §6 must be settled as part of
+step 1: the cut-based reading and the minimal-subtree reading disagree on small
+instances, and the campaign must not construct a candidate while the source
+objective is ambiguous. Per the harness authorisation, no round was consumed.
