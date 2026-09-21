@@ -493,13 +493,12 @@
      ]
     }
    },
-   "source_opt_components": null,
-   "source_opt_solution_count": null,
-   "pending_reason": "cut-based oracle |F|=3; rSPR distance 1. The two readings disagree because the oracle requires the two cut sets to have the same size, while the rSPR agreement forest of this instance cuts two edges in one tree and none in the other (see preparation.md section 4)"
+   "source_opt_components": 2,
+   "source_opt_solution_count": 3
   },
   {
    "name": "quartet_swap_4",
-   "description": "the quartet swap; two optima, no coarser forest",
+   "description": "the quartet swap; multiple optimal cut pairs, no coarser forest",
    "source": {
     "problem": "maaforest",
     "labels": [
@@ -609,7 +608,7 @@
     }
    },
    "source_opt_components": 3,
-   "source_opt_solution_count": 2
+   "source_opt_solution_count": 14
   },
   {
    "name": "quartet_swap_other_4",
@@ -723,7 +722,7 @@
     }
    },
    "source_opt_components": 3,
-   "source_opt_solution_count": 2
+   "source_opt_solution_count": 14
   },
   {
    "name": "pseudorooted_5",
@@ -864,7 +863,7 @@
     }
    },
    "source_opt_components": 3,
-   "source_opt_solution_count": 1
+   "source_opt_solution_count": 10
   }
  ],
  "target_fixtures": {

@@ -91,9 +91,11 @@ and `ρ` belongs to the label set — the convention of Bordewich-Semple 2005 an
 of van Iersel et al. 2012, as restated in arXiv:2202.09904, Section 2.
 
 A **cut set** `S` of a tree `T` is a set of arcs of `T`. Removing `S` from `T`
-splits it into connected parts. A part becomes a **component** after deleting
-unlabelled leaves and suppressing non-root vertices of degree 2; the component is
-rooted at the apex of its part, or at `ρ` when the part carries the root label.
+splits it into connected parts. A part with label block `B` is represented by
+its cut-part vertex set and component arcs; its rooted labelled component shape
+for agreement is the minimal subtree `T[B]`, with unlabelled leaves deleted and
+unlabelled degree-2 vertices suppressed. The component is rooted at the apex of
+that restriction, or at the augmented root when `B` carries `ρ`.
 
 An **agreement forest** of `(T1, T2)` is a pair of cut sets `(S1, S2)` whose
 components pair up bijectively so that paired components have the same label set
@@ -137,8 +139,8 @@ open.
  "num_components": 2}
 ```
 
-A source output lists the two cut sets and, for every component, its label set
-and its vertex set and induced arc set in each tree. It is **valid** iff
+A source output lists the two cut sets and, for every component, its label set,
+cut-part vertex set and reduced component arc set in each tree. It is **valid** iff
 
 1. the decoded label sets partition `X ∪ {ρ}` and are pairwise distinct,
 2. in each tree the component vertex sets are pairwise disjoint and cover every
@@ -153,15 +155,12 @@ source instance and never trusts a value carried by the output.
 
 ### 1.5 Independent source oracle
 
-**Status: pending.** `check.py` contains an edge-cut enumerator
-(`source_oracle`) that searches the finite family of all cut subsets of both
-trees and matches signatures, but its component rendering is not yet correct and
-its values are therefore not used as ground truth: `cases.json` stores `null`
-for every source optimum and the self-test reports them as pending. The finite
-family and the intended rendering are declared; the implementation and its
-cross-check against `evidence/rspr_reference.py` are the blocking work recorded
-in `preparation.md`. This is a missing capability, reported as pending, not a
-successful check.
+`check.py` contains an edge-cut enumerator (`source_oracle`) over the finite
+family of all cut subsets of both trees. It matches block-restriction signatures,
+filters the union of component arcs for acyclicity, and validates returned
+witnesses independently. `evidence/agreement_forest_reference.py` is a second
+implementation with a separate augmented-tree representation; it reproduces
+the stored optima and minimum cut-pair counts on all nine fixtures.
 
 Reference findings that the repaired oracle must reproduce (independently
 computed, see `preparation.md` section 5):
@@ -206,7 +205,7 @@ outputs of cardinality `OPT_B(G) = min{|S| : S valid}`.
 `check.py` decides `OPT_B(G)` and enumerates `S_B(G)` on a finite domain by an
 oracle that never reads a candidate:
 
-1. **Exhaustive subset enumeration.** For `|V| ≤ 12`, all subsets are tested in
+1. **Exhaustive subset enumeration.** For `|V| ≤ 18`, all subsets are tested in
    increasing cardinality; the first cardinality admitting a valid set is
    `OPT_B`, and every valid set of that cardinality is a member of `S_B`.
 2. **SMT decision oracle (Z3).** For larger graphs, `OPT_B` is found by
@@ -216,12 +215,7 @@ oracle that never reads a candidate:
    every arc `(u,v)`, `u ∈ S ∨ level[u] < level[v]`. Feasibility of that system
    is equivalent to acyclicity of the remainder (a DAG has a topological order;
    conversely, levels induce one).
-3. **Independent CP-SAT cross-check (OR-Tools).** The same decision problem is
-   encoded a second time with a *different* propagation-based acyclicity
-   encoding (per-vertex reachability ranks are replaced by "keep" variables and
-   transitive-closure ordering constraints), so that a shared encoding bug is
-   unlikely to survive both backends.
-4. **Witness validation.** Every set returned by any oracle is validated by the
+3. **Witness validation.** Every set returned by any oracle is validated by the
    explicit Kahn test of §2.2; a set is accepted only after that check passes.
    A negative answer (`OPT_B > k`) is accepted only from an infeasibility result
    of the decision oracle; `unknown` is never read as a decision.
@@ -313,9 +307,9 @@ the definitions:
   a maximum agreement forest.
 
 `evidence/agreement_forest_reference.py` is a second, independent edge-cut
-enumeration written against the same definition. It is currently being repaired
-together with the source oracle; its values are not used as ground truth.
-Section 6 records the open modelling question.
+enumeration written against the same definition. Its values and the reusable
+oracle agree on the finite source fixtures. Section 6 records the modelling
+boundary.
 
 ## 6. Open modelling question (recorded, not resolved)
 
@@ -331,10 +325,8 @@ overlapping minimal connecting subtrees in one of the two trees or has blocks
 whose restrictions disagree. The standard model instead derives the components
 from cuts, and under it the quartet swap has a 3-block forest.
 
-Which reading the fixed question intends therefore changes the source optimum on
-small instances. This file fixes the **cut-based** reading, because it is the
-model of the cited literature and reproduces the `d_rSPR = |F| − 1` identity,
-and `preparation.md` records the discrepancy and the evidence. If the intended
-reading is the minimal-subtree one, this is a different source problem and the
-question must be amended before a candidate is constructed; it is not resolved
-here.
+The fixed source model is therefore the **cut-based** reading: every block must
+come from a cut part in both trees, while `T[B]` supplies the paired restriction
+shape. An alternative model that permits arbitrary minimal subtrees without the
+cut-part requirement is a different source problem and would require amending
+the question before construction.

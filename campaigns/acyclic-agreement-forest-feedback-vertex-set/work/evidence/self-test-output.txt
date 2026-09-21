@@ -1,2 +1,1 @@
-PENDING case rSPR1_3: cut-based oracle |F|=3; rSPR distance 1. The two readings disagree because the oracle requires the two cut sets to have the same size, while the rSPR agreement forest of this instance cuts two edges in one tree and none in the other (see preparation.md section 4)
-self-test: 148 checks, 0 failures
+self-test: 236 checks, 0 failures

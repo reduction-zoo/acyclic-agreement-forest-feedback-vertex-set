@@ -172,6 +172,44 @@ class Tree:
 
     # -- components -------------------------------------------------------
 
+    def minimal_component_key(self, labels):
+        """Canonical tree key for the minimal subtree spanning `labels`."""
+        targets = [v for v in self.ids if self.label_of[v] in labels]
+        if len(targets) != len(labels):
+            return None
+        chains = []
+        for v in targets:
+            chain = []
+            while v is not None:
+                chain.append(v)
+                v = self.parent[v]
+            chains.append(chain)
+        common = set(chains[0]).intersection(*chains[1:])
+        root = max(common, key=lambda v: len(chains[0]) - chains[0].index(v))
+        alive = set()
+        for chain in chains:
+            alive.update(chain[:chain.index(root) + 1])
+        kids = {v: [c for c in self.children[v] if c in alive] for v in alive}
+        while True:
+            victim = next((v for v in alive
+                           if self.label_of[v] is None and len(kids[v]) == 1), None)
+            if victim is None:
+                break
+            child = kids[victim][0]
+            if victim == root:
+                root = child
+            else:
+                parent = next(p for p in alive if victim in kids[p])
+                kids[parent] = [child if c == victim else c for c in kids[parent]]
+            alive.remove(victim)
+            del kids[victim]
+
+        def ser(v):
+            cs = sorted(ser(c) for c in kids[v])
+            return self.label_of[v] if not cs else "(" + ",".join(cs) + ")"
+
+        return ser(root)
+
     def component_of_part(self, part):
         """Render one connected part of a cut as a rooted component tree.
 
@@ -239,7 +277,8 @@ class Tree:
                 return self.label_of[v] if self.label_of[v] is not None else v
             return "(" + ",".join(cs) + ")"
 
-        return {"labels": labels, "root": root, "key": ser(root),
+        return {"labels": labels, "root": root,
+                "key": self.minimal_component_key(labels),
                 "vertices": set(alive),
                 "arcs": frozenset((c, v) for v in alive for c in kids[v])}
 
@@ -430,6 +469,13 @@ def source_oracle(obj, leaf_cap=SOURCE_ORACLE_LEAF_CAP):
             continue
         for c1 in cuts1:
             for c2 in by_sig2[sig]:
+                comps1 = t1.cut_components(c1)
+                comps2 = t2.cut_components(c2)
+                union = set()
+                for comp in comps1 + comps2:
+                    union |= set(comp["arcs"])
+                if not is_acyclic_arc_set(union):
+                    continue
                 if best is None or size < best:
                     best, sols = size, [(c1, c2)]
                 elif size == best:

@@ -32,9 +32,10 @@ globally minimum acyclic agreement forest of the source, ties included.
 
 ## Status
 
-Open; no construction attempt has been made. This repository currently contains
-only the fixed question, the campaign state and the copied skills and
-specifications. Nothing here is a correctness, novelty or verification result.
+Open; Prepare is complete and no construction attempt has been made. The finite
+source and target oracles are green, and the independent source cross-check
+reproduces all nine stored optima. Nothing here is a correctness, novelty or
+verification result for a reduction.
 
 ## Layout
 
@@ -50,18 +51,15 @@ specifications. Nothing here is a correctness, novelty or verification result.
 
 ## Reproduction
 
-No Python project exists yet; `pyproject.toml` and `uv.lock` are added when the
-testing foundation first uses Python, after which every command runs as:
+No Python project exists yet; the current foundation uses only the installed
+standard library and Z3 module. Run the checks from the work directory:
 
 ```sh
-uv sync --locked
-uv run --locked python check.py --self-test
-uv run --locked python check.py --candidate algorithm.py
+cd campaigns/acyclic-agreement-forest-feedback-vertex-set/work
+python3 check.py --self-test
+python3 evidence/agreement_forest_reference.py
 ```
 
 The tool versions this machine actually provides are recorded in the capability
-probe in `state.md`. Run the campaign from a session whose workspace is this
-repository, started on the `research` agent preset so that the registered
-independent reviewer (`research_reviewer`) is mounted; the launching session that
-selected the question from the board ran the `standard` preset and could only
-leave the registration installed.
+probe in `state.md`. The Codex reviewer registration in `.codex/agents/` is used
+when a complete candidate and proof are ready.

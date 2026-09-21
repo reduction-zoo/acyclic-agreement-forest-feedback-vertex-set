@@ -1,0 +1,9 @@
+one_leaf                 |F|=1  n_min_cut_pairs=1
+two_leaves_identical     |F|=1  n_min_cut_pairs=1
+three_leaves_identical   |F|=1  n_min_cut_pairs=1
+identical_4              |F|=1  n_min_cut_pairs=1
+common_cherry_4          |F|=1  n_min_cut_pairs=1
+rSPR1_3                  |F|=2  n_min_cut_pairs=3
+quartet_swap_4           |F|=3  n_min_cut_pairs=14
+quartet_swap_other_4     |F|=3  n_min_cut_pairs=14
+pseudorooted_5           |F|=3  n_min_cut_pairs=10
