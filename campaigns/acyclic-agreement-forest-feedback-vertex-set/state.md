@@ -42,13 +42,13 @@ comparators remain pending and block only optional final formal certification.
 
 | Round | Mechanism / standalone literature scope | First discriminating check | Outcome | Record |
 |---|---|---|---|---|
-| — | none started | — | — | — |
+| 1 | Cycle Killer 2012 / upstream issue 1047 exactness audit | Does Section 4 provide exact global recovery from every minimum DFVS? | refuted for direct reuse: only restricted-splitting approximation guarantees | [rounds/001/round.md](rounds/001/round.md) |
 
-No research round has been opened. The budget is 3; used 0, remaining 3; distinct
-mechanisms attempted 0. Prepare is **complete**: both endpoint oracles run, all
-nine source fixtures have independently reproduced optima, and the source
-validator exercises malformed and suboptimal outputs. Preparation and routine
-oracle repair did not consume a research round. No candidate was constructed.
+The budget is 3; used 1, remaining 2; distinct mechanisms attempted 1. Prepare
+is complete: both endpoint oracles run, all nine source fixtures have
+independently reproduced optima, and the source validator exercises malformed
+and suboptimal outputs. Round 1 was a bounded literature investigation and
+found no exact candidate. No candidate was constructed.
 
 ## Artifacts
 
@@ -86,6 +86,6 @@ registration is available and will be used when a candidate and its proof exist.
 
 ## Next action
 
-Commit the completed Prepare foundation, then load [Propose](../../.agents/skills/research-propose/SKILL.md)
-and open round 1 with a bounded construction hypothesis. The round table stands
-at 0 used of 3, and no candidate has been constructed.
+Load [Propose](../../.agents/skills/research-propose/SKILL.md) and open Round 2
+with a materially different exact construction hypothesis that does not assume
+the chain-forest normal form. The remaining budget is 2 rounds.
