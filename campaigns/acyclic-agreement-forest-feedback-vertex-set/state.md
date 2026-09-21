@@ -85,6 +85,11 @@ first expanded graph before manual interruption.
 - Candidate source-CNF verification: up to 16 minimum formula assignments per
   prepared case decoded to forests accepted by the independent validator; see
   [rounds/002/formula-optimum-check.txt](rounds/002/formula-optimum-check.txt).
+- Independent target-side verification: one minimum target output for each of
+  `one_leaf`, `two_leaves_identical`, `three_leaves_identical` and `rSPR1_3`
+  decoded to a valid globally minimum forest; see
+  [work/verification.md](work/verification.md) and
+  [work/evidence/verify-small-output.txt](work/evidence/verify-small-output.txt).
 - `python3 work/check.py --candidate work/algorithm.py` was started. It emitted
   a legal 1,118-vertex target for `one_leaf`, then its independent target
   oracle run was manually interrupted; see
@@ -92,9 +97,9 @@ first expanded graph before manual interruption.
 
 ## Review
 
-None. The candidate has not passed the independent target-side suite, so review
-is premature. The Codex reviewer registration is available and will be used
-after the candidate and its proof pass the relevant checks.
+None. The candidate has not passed the complete independent target-side suite,
+so review is premature. The Codex reviewer registration is available and will
+be used after the candidate and its proof pass the relevant checks.
 
 ## Next action
 

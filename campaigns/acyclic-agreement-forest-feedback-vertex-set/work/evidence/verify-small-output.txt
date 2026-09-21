@@ -1,0 +1,13 @@
+Command: python3 -u verify.py --candidate algorithm.py --max-leaves 3 --target-cap 1
+
+one_leaf: target_opt=607 groups=372 alternate_targets=1 source_opt=1
+two_leaves_identical: target_opt=2953 groups=1292 alternate_targets=1 source_opt=1
+three_leaves_identical: target_opt=8691 groups=2986 alternate_targets=1 source_opt=1
+rSPR1_3: target_opt=8732 groups=2998 alternate_targets=1 source_opt=2
+verification: 4 target outputs checked, 0 failures, pending=['identical_4', 'common_cherry_4', 'quartet_swap_4', 'quartet_swap_other_4', 'pseudorooted_5']
+
+The target solver grouped nonadjacent vertices with identical neighbourhoods,
+solved the resulting weighted vertex-cover instance with Z3 Optimize, and
+passed one independently obtained minimum target output per listed source case
+through the candidate extractor. Source membership and optimum were checked by
+the standalone agreement-forest reference implementation.

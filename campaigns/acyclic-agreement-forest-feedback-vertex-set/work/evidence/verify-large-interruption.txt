@@ -1,0 +1,7 @@
+Command: python3 -u verify.py --candidate algorithm.py --max-leaves 4 --target-cap 1
+
+The run completed the first four cases only through `identical_4` and then was
+manually interrupted while independently optimizing the next four-leaf target
+graph. The interruption caused the solver wrapper to return no cover. It is an
+execution failure and leaves those cases pending; no timeout was added and the
+interruption is not treated as an oracle result.
