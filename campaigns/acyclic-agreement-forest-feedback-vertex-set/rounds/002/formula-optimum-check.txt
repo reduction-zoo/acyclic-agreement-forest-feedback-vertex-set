@@ -1,0 +1,18 @@
+Command: finite Z3 enumeration of up to 16 minimum satisfying assignments of the
+candidate source CNF for each prepared case; each assignment was converted to
+the corresponding minimum weighted-cover output and passed to the independent
+source validator.
+
+one_leaf 4 0
+two_leaves_identical 16 0
+three_leaves_identical 16 0
+identical_4 16 0
+common_cherry_4 16 0
+rSPR1_3 16 0
+quartet_swap_4 16 0
+quartet_swap_other_4 16 0
+pseudorooted_5 16 0
+
+The first number after each case is the number of minimum formula assignments
+enumerated (the one-leaf formula has four); the final number is the count of
+invalid recovered forests. All were zero.

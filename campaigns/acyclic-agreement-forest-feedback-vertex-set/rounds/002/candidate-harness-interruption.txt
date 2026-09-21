@@ -1,0 +1,7 @@
+Command: python3 work/check.py --candidate work/algorithm.py
+
+The candidate produced a legal target graph for the first fixture. The
+independent target oracle was then solving the expanded clone graph. The run
+was manually interrupted after producing no result; the interruption caused
+the solver wrapper to report `unknown`. This is recorded as an execution
+failure, not as an oracle answer or a counterexample. No timeout was added.

@@ -43,19 +43,24 @@ comparators remain pending and block only optional final formal certification.
 | Round | Mechanism / standalone literature scope | First discriminating check | Outcome | Record |
 |---|---|---|---|---|
 | 1 | Cycle Killer 2012 / upstream issue 1047 exactness audit | Does Section 4 provide exact global recovery from every minimum DFVS? | refuted for direct reuse: only restricted-splitting approximation guarantees | [rounds/001/round.md](rounds/001/round.md) |
+| 2 | Exact MAAF verifier CNF -> weighted vertex cover -> unweighted DFVS clone groups | Do minimum formula assignments and the resulting cover outputs decode to minimum forests on every prepared case? | local exact formula checks supported the construction; full target harness was an execution failure after the first expanded graph, so target-side verification remains pending | [rounds/002/round.md](rounds/002/round.md) |
 
-The budget is 3; used 1, remaining 2; distinct mechanisms attempted 1. Prepare
+The budget is 3; used 2, remaining 1; distinct mechanisms attempted 2. Prepare
 is complete: both endpoint oracles run, all nine source fixtures have
 independently reproduced optima, and the source validator exercises malformed
-and suboptimal outputs. Round 1 was a bounded literature investigation and
-found no exact candidate. No candidate was constructed.
+and suboptimal outputs. Round 1 found no exact reuse of Cycle Killer. Round 2
+left an executable candidate and a general proof, with independent target-side
+verification pending after the positional target oracle did not finish its
+first expanded graph before manual interruption.
 
 ## Artifacts
 
 - `question.md` fixed. `work/contract.md`, `work/cases.json`, `work/check.py`,
   `work/preparation.md` and `work/evidence/` now contain the completed Prepare
   foundation.
-- No `rounds/`, `reviews/` or `formal/` content. No `pyproject.toml` or
+- `work/algorithm.py` and `work/proof.md` contain the current candidate. Round
+  002 retains the local formula-all-optima check and the interrupted target
+  harness run. No `reviews/` or `formal/` content. No `pyproject.toml` or
   `uv.lock`: `check.py` uses only the standard library plus the environment's Z3,
   so no Python project has been created yet; add one when the foundation first
   needs a locked dependency.
@@ -77,15 +82,24 @@ found no exact candidate. No candidate was constructed.
   explicit Kahn check) and on the deliberate valid/invalid fixtures.
 - `python3 evidence/rspr_reference.py` — independent rSPR distances; retained in
   `work/evidence/rspr-distances.txt`.
-- No candidate exists, so `--candidate` has never been run.
+- Candidate source-CNF verification: up to 16 minimum formula assignments per
+  prepared case decoded to forests accepted by the independent validator; see
+  [rounds/002/formula-optimum-check.txt](rounds/002/formula-optimum-check.txt).
+- `python3 work/check.py --candidate work/algorithm.py` was started. It emitted
+  a legal 1,118-vertex target for `one_leaf`, then its independent target
+  oracle run was manually interrupted; see
+  [rounds/002/candidate-harness-interruption.txt](rounds/002/candidate-harness-interruption.txt).
 
 ## Review
 
-None. No candidate exists, so there is nothing to review. The Codex reviewer
-registration is available and will be used when a candidate and its proof exist.
+None. The candidate has not passed the independent target-side suite, so review
+is premature. The Codex reviewer registration is available and will be used
+after the candidate and its proof pass the relevant checks.
 
 ## Next action
 
-Load [Propose](../../.agents/skills/research-propose/SKILL.md) and open Round 2
-with a materially different exact construction hypothesis that does not assume
-the chain-forest normal form. The remaining budget is 2 rounds.
+Use the remaining round to reduce the target baseline or independently verify
+the current clone graph, then rerun the fixed candidate harness. Do not treat
+the interrupted target oracle as an oracle result. If no lower-baseline route is
+found, preserve the candidate as incomplete rather than calling the question
+solved; independent target verification and review remain required.
