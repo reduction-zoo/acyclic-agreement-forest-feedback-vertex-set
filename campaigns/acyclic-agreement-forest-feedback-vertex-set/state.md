@@ -89,12 +89,12 @@ preset), and it will be used when a candidate and its proof exist.
 Finish [Prepare](../../.agents/skills/research-prepare/SKILL.md) before
 constructing anything:
 
-1. Settle the two disputed source optima recorded in `work/preparation.md`
-   section 4: for `T1 = ((a,b),c)`, `T2 = ((a,c),b)` the oracle reports `|F| = 3`
-   while the independent rSPR search reports `d_rSPR = 1`; the same identity
-   fails on the five-leaf instance. Decide whether the oracle's rendering is
-   still wrong there or whether the cross-check identity has a different form,
-   then store the two missing optima in `work/cases.json`.
+1. Apply the narrow fix identified in `work/preparation.md` section 5: render a
+   component's tree and key from the block's minimal subtree `T[B]` (degree-2
+   vertices suppressed) instead of from the cut part. That single change makes
+   the two-block forest of `T1 = ((a,b),c)`, `T2 = ((a,c),b)` validate, so the
+   source optimum becomes 2 and the one `PENDING` case can be stored. The vertex
+   sets, signature matching and validator data model are unchanged.
 2. Repair `work/evidence/agreement_forest_reference.py` so that it is genuinely
    independent of the oracle rather than reusing its rendering idea.
 3. Only then begin Propose. Per the session skill, preparation does not consume a

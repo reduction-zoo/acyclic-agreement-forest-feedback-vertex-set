@@ -96,31 +96,39 @@ question is read as the classic asymmetric rSPR agreement forest, the source
 model in `contract.md` §1.3 must be replaced; that is a change to the fixed
 objective and needs the question to be amended first.
 
-## 5. Diagnosis log## 5. Diagnosis log
+## 5. Root cause of the remaining discrepancy
 
-The defects found and fixed while building the source oracle, in order:
+The oracle renders a component from **the part of the cut** — the connected piece
+of `T - S` — while the standard definition renders it from **the block's minimal
+subtree**, `T[B]` with degree-2 vertices suppressed. The two differ on the
+containing shape, and the difference is the whole of the three-leaf divergence.
 
-1. **Encodings that used a leaf's label as its node id.** Ambiguous when a label
-   equals an internal node id. Fixed: node ids of leaves are ordinary strings and
-   `label` is a separate field.
-2. **The root label modelled as a synonym for the declared root.** This made
-   every singleton block's connecting subtree a single vertex, so the
-   all-singleton partition was always valid. Fixed: `ρ` is a real pendant leaf
-   above the declared root, as in the references.
-3. **A part's apex was not suppressed when it was an unlabelled degree-2 vertex.**
-   Suppressing it in the wrong order swallowed the entire subtree below it, so
-   the rendered component collapsed to a single vertex. Fixed: the apex is
-   suppressed only when it is unlabelled and has fewer than two children in the
-   part, and its single child is lifted.
-4. **The empty-list trap.** Suppressing an apex by deleting it without lifting
-   its child left the child with no parent and destroyed the subtree; lifting the
-   child into the deleted vertex's parent fixes it.
-5. **A non-terminating lifting rule.** An early version appended lifted children
-   without removing the victim from the child lists, so the loop never reached a
-   fixed point. The self-test hung; the run was killed by the harness and is
-   recorded as an execution failure, not as an oracle answer.
+For `T1 = ((a,b),c)`, `T2 = ((a,c),b)`, cut the edge `(a,n3)` in both trees. The
+label partition is `{a} | {b,c,ρ}` in both, so the blocks match. But the oracle
+renders the part `{b,c,n3,n5,ρ}` inside each tree, and the part retains a
+tree-specific branching vertex:
 
-## 6. Finite bounds declared in advance
+| tree | part rendered by the oracle | key |
+|---|---|---|
+| `T1 = ((a,b),c)` | `{b,c,n3,n5,ρ}` with `n3={a,b}` cut down to `b` | `(((b),c),ρ)` |
+| `T2 = ((a,c),b)` | `{b,c,n3,n5,ρ}` with `n3={a,c}` cut down to `b` | `(((c),b),ρ)` |
+
+The keys differ, so the oracle rejects the two-block forest and reports
+`|F| = 3`. The standard rule instead takes `T[{b,c,ρ}]`, whose shape is the
+cherry `(b,c)` in **both** trees, so the blocks agree and `|F| = 2`, matching
+`d_rSPR = 1` by the identity. The same defect is why the earlier attempt reported
+`|F| = 4` and `|F| = 5` on instances whose true optima are 3.
+
+So the fix is local and precisely stated: in `check.py`, a component's rendered
+tree and key must come from `T[B]` (minimal subtree of the block, degree-2
+vertices suppressed, unlabelled leaves deleted, rooted at `ρ` when the block
+carries it and at the apex otherwise), not from `cut_components`. The vertex
+sets, the signature matching and the validator's data model stay as they are.
+
+Attempts at this fix in this session are recorded below; the working tree keeps
+the version whose self-test is green, so nothing is half-edited.
+
+## 5b. Diagnosis log## 6. Finite bounds declared in advance
 
 - Source search family: all cut subsets of both trees, admitted only for
   instances with at most `SOURCE_ORACLE_LEAF_CAP = 7` leaves.
