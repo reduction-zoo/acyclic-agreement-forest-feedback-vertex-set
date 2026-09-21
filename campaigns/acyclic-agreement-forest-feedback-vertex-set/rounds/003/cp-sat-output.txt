@@ -1,0 +1,9 @@
+Command: independent CP-SAT weighted-cover probe on the actual target emitted
+for `common_cherry_4`.
+
+vertices 34025 groups 5670 edges 9552
+status FEASIBLE seconds 112.87 objective 20929.0
+
+The solver returned a feasible incumbent without an optimality certificate.
+The incumbent is therefore not a target oracle answer and was not passed to
+the candidate extractor as a minimum output.

@@ -36,6 +36,9 @@ The route supplies a general proof template for exact recovery from all target
 ties, but its clone expansion creates a large baseline DFVS instance. A future
 attempt should retain the all-minimum group argument while reducing the target
 baseline or using a target-side verifier that can exploit the clone structure.
+The independent twin-group verifier reduced `common_cherry_4` to 5,670 groups,
+but Z3 did not finish its exact optimum and CP-SAT returned only a feasible
+incumbent, so this compression does not discharge target-side verification.
 
 ## Use history
 

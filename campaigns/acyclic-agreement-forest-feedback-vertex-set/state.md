@@ -44,14 +44,15 @@ comparators remain pending and block only optional final formal certification.
 |---|---|---|---|---|
 | 1 | Cycle Killer 2012 / upstream issue 1047 exactness audit | Does Section 4 provide exact global recovery from every minimum DFVS? | refuted for direct reuse: only restricted-splitting approximation guarantees | [rounds/001/round.md](rounds/001/round.md) |
 | 2 | Exact MAAF verifier CNF -> weighted vertex cover -> unweighted DFVS clone groups | Do minimum formula assignments and the resulting cover outputs decode to minimum forests on every prepared case? | local exact formula checks supported the construction; full target harness was an execution failure after the first expanded graph, so target-side verification remains pending | [rounds/002/round.md](rounds/002/round.md) |
+| 3 | Independent twin-group weighted-cover and CP-SAT target verification | Can an exact solver certify the first unresolved expanded target and provide a minimum output for recovery? | execution failure: CP-SAT found only a feasible incumbent on `common_cherry_4`; no target optimum was inferred | [rounds/003/round.md](rounds/003/round.md) |
 
-The budget is 3; used 2, remaining 1; distinct mechanisms attempted 2. Prepare
+The budget is 3; used 3, remaining 0; distinct mathematical mechanisms attempted 2. Prepare
 is complete: both endpoint oracles run, all nine source fixtures have
 independently reproduced optima, and the source validator exercises malformed
 and suboptimal outputs. Round 1 found no exact reuse of Cycle Killer. Round 2
 left an executable candidate and a general proof, with independent target-side
-verification pending after the positional target oracle did not finish its
-first expanded graph before manual interruption.
+verification pending after the positional, weighted Z3 and CP-SAT target
+solvers did not certify the larger expanded graphs.
 
 ## Artifacts
 
@@ -90,6 +91,10 @@ first expanded graph before manual interruption.
   decoded to a valid globally minimum forest; see
   [work/verification.md](work/verification.md) and
   [work/evidence/verify-small-output.txt](work/evidence/verify-small-output.txt).
+- Round 003's independent CP-SAT probe found only a feasible incumbent on the
+  first unresolved four-leaf target; see
+  [rounds/003/cp-sat-output.txt](rounds/003/cp-sat-output.txt). It is not an
+  oracle answer.
 - `python3 work/check.py --candidate work/algorithm.py` was started. It emitted
   a legal 1,118-vertex target for `one_leaf`, then its independent target
   oracle run was manually interrupted; see
@@ -103,8 +108,8 @@ be used after the candidate and its proof pass the relevant checks.
 
 ## Next action
 
-Use the remaining round to reduce the target baseline or independently verify
-the current clone graph, then rerun the fixed candidate harness. Do not treat
-the interrupted target oracle as an oracle result. If no lower-baseline route is
-found, preserve the candidate as incomplete rather than calling the question
-solved; independent target verification and review remain required.
+The authorized three-round campaign is stopped with an incomplete candidate.
+The forward/recovery proof and four independent minimum-target checks are
+preserved, but complete target-side verification and independent review remain
+required. Resume only with additional round authorization or a smaller exact
+target construction; do not treat feasible solver incumbents as target optima.
