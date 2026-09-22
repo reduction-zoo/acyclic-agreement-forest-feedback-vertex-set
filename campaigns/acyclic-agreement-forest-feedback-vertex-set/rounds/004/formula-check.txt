@@ -1,0 +1,14 @@
+formulas=25 thresholds=111 recovered_partitions=57
+formulas=50 thresholds=236 recovered_partitions=114
+formulas=75 thresholds=361 recovered_partitions=166
+formulas=100 thresholds=486 recovered_partitions=212
+formulas=125 thresholds=611 recovered_partitions=271
+formulas=150 thresholds=736 recovered_partitions=326
+formulas=175 thresholds=861 recovered_partitions=389
+formulas=200 thresholds=986 recovered_partitions=444
+formulas=225 thresholds=1111 recovered_partitions=505
+formulas=250 thresholds=1250 recovered_partitions=557
+formulas=275 thresholds=1407 recovered_partitions=628
+formulas=300 thresholds=1582 recovered_partitions=685
+formulas=325 thresholds=1749 recovered_partitions=754
+PASS formulas=327 thresholds=1759 recovered_partitions=759

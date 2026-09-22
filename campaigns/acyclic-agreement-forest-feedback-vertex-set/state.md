@@ -18,6 +18,11 @@ and rounds remain. No valid current reduction or proof is claimed.
 
 ## Authorization and budget
 
+- 2026-09-22 continuation: user authorized up to **20 additional rounds**.
+  New allocation used: 1 in progress (004), remaining: 19. Historical 3
+  retained; total allocation 23, total started 4. Round 004 uses parallel
+  thresholds and unweighted CNF covers; see `rounds/004/round.md`.
+
 - Original authorization: 2026-09-21, research this fixed question; default
   allocation 3 rounds. The historical record charged all three below.
 - 2026-09-22: the user explicitly requested redoing the problem from Prepare.

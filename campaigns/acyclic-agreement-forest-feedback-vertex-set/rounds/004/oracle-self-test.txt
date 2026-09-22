@@ -1,0 +1,16 @@
+source checked: 25/327
+source checked: 50/327
+source checked: 75/327
+source checked: 100/327
+source checked: 125/327
+source checked: 150/327
+source checked: 175/327
+source checked: 200/327
+source checked: 225/327
+source checked: 250/327
+source checked: 275/327
+source checked: 300/327
+source checked: 325/327
+1/1 legacy_one_leaf: target_opt=1 outputs=2 all_optima=True
+candidate: instances=1 recoveries=2 capped_instances=0
+PASS source_instances=327 partitions=113194 source_optima=956 target_instances=631 target_optima=766; all optima enumerated; rename, cycle, suboptimal and malformed checks passed

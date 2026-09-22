@@ -227,10 +227,55 @@ def valid_dfvs(vertices, arcs, chosen):
             and acyclic(set(vertices) - set(chosen), arcs))
 
 
+def solve_bidirected(vertices, arcs, cap):
+    """Independent minimum vertex-cover model for a bidirected input graph.
+
+    Every edge is a directed 2-cycle, so hitting these edges is necessary and
+    sufficient. No graph naming convention or candidate metadata is read.
+    """
+    from ortools.sat.python import cp_model
+    model = cp_model.CpModel()
+    chosen = {v: model.new_bool_var(f'x{i}') for i,v in enumerate(vertices)}
+    for u,v in arcs:
+        if u <= v:
+            model.add_bool_or([chosen[u], chosen[v]])
+    total = sum(chosen.values())
+    model.minimize(total)
+    solver = cp_model.CpSolver()
+    solver.parameters.num_search_workers = 1
+    result = solver.solve(model)
+    if result != cp_model.OPTIMAL:
+        raise RuntimeError('CP-SAT did not certify global optimality: '+solver.status_name(result))
+    optimum = sum(solver.value(x) for x in chosen.values())
+    model.clear_objective()
+    model.add(total == optimum)
+    class Outputs(cp_model.CpSolverSolutionCallback):
+        def __init__(self):
+            super().__init__()
+            self.outputs = set()
+        def on_solution_callback(self):
+            output = tuple(sorted(v for v,x in chosen.items() if self.value(x)))
+            if not valid_dfvs(vertices, arcs, list(output)) or len(output) != optimum:
+                raise AssertionError('invalid CP-SAT witness')
+            self.outputs.add(output)
+            if len(self.outputs) > cap:
+                self.stop_search()
+    callback = Outputs()
+    solver.parameters.enumerate_all_solutions = True
+    result = solver.solve(model, callback)
+    if result not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
+        raise RuntimeError('CP-SAT witness enumeration failed: '+solver.status_name(result))
+    outputs = callback.outputs
+    complete = len(outputs) <= cap and result == cp_model.OPTIMAL
+    return optimum, set(sorted(outputs)[:cap]), complete
+
+
 def solve_target(target, cap=TARGET_OUTPUT_CAP):
     vertices, arcs = parse_target(target)
     if not vertices:
         return 0, {()}, True
+    if all((v,u) in arcs for u,v in arcs):
+        return solve_bidirected(vertices, arcs, cap)
     deleted = {v: z3.Bool(f'd{i}') for i, v in enumerate(vertices)}
     ranks = {v: z3.Int(f'p{i}') for i, v in enumerate(vertices)}
     solver = z3.Solver()
