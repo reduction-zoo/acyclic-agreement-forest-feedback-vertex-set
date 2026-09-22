@@ -1,0 +1,3 @@
+PASS exhaustive_3_0_1: vertices=352 arcs=1024 minimum_dfvs=193 recovered_components=2
+One independently minimum target witness; target enumeration complete: False
+{"problem": "maaforest", "components": [["a"], ["b", "c", "ρ"]], "num_components": 2}
