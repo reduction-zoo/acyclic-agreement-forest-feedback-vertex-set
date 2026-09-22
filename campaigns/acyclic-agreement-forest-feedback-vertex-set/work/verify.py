@@ -29,10 +29,18 @@ def connected_optima(target, cap=4):
     for clique in nx.find_cliques(graph):
         model.add_at_most_one(kept[v] for v in clique)
     # Certificate upper bound for the independent set, using disjoint cliques.
-    unavailable=set(); bound=0
-    for clique in sorted(nx.find_cliques(graph),key=lambda c:-len(c)):
-        if not unavailable.intersection(clique):
-            unavailable.update(clique); bound+=1
+    unavailable={v for v in vertices if (v,v) in arcs}; bound=0
+    packing=[([v],0) for v in unavailable]
+    for clique in nx.find_cliques(graph):
+        if len(clique)>=3 and not unavailable.intersection(clique):
+            unavailable.update(clique); bound+=1; packing.append((clique,1))
+    position={v:i for i,v in enumerate(vertices)}
+    for v in vertices:
+        if v in unavailable: continue
+        partners=[u for u in graph[v] if u not in unavailable]
+        if partners:
+            u=min(partners,key=position.get); unavailable.update((u,v)); bound+=1; packing.append(([u,v],1))
+    packing.extend(([v],1) for v in set(vertices)-unavailable)
     bound+=len(set(vertices)-unavailable)
     model.add(sum(kept.values())<=bound)
     model.maximize(sum(kept.values()))
@@ -41,6 +49,8 @@ def connected_optima(target, cap=4):
     assert status==cp_model.OPTIMAL,solver.status_name(status)
     size=sum(solver.value(x) for x in kept.values())
     model.clear_objective();model.add(sum(kept.values())==size)
+    if size==bound:
+        for group,limit in packing:model.add(sum(kept[v] for v in group)==limit)
     outputs=[]
     for _ in range(cap):
         status=solver.solve(model)

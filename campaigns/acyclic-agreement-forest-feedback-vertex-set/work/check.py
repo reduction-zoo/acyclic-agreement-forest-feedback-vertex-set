@@ -387,14 +387,19 @@ def main():
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('--self-test', action='store_true')
     group.add_argument('--candidate', type=Path)
+    parser.add_argument('--shard', nargs=2, type=int, metavar=('INDEX','COUNT'))
     args = parser.parse_args()
+    if args.shard and (args.self_test or not 0 <= args.shard[0] < args.shard[1]):
+        parser.error('--shard needs --candidate and 0 <= INDEX < COUNT')
     if args.self_test:
         from prepare import self_test
         self_test()
     else:
-        check_candidate(args.candidate.resolve(),
-                        json.loads((WORK / 'cases.json').read_text())['cases'],
-                        WORK / 'evidence')
+        cases = json.loads((WORK / 'cases.json').read_text())['cases']
+        if args.shard:
+            index,count = args.shard
+            cases = cases[index::count]
+        check_candidate(args.candidate.resolve(), cases, WORK / 'evidence')
 
 
 if __name__ == '__main__':

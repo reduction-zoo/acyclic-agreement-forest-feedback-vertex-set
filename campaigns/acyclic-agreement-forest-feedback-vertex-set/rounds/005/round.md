@@ -72,3 +72,11 @@ the prior additional CP-SAT run completed one (4 recoveries). Both incomplete
 runs remain as interruption evidence. The final runs use separate new log paths.
 Recovery subprocesses are independent and can execute eight at a time; solver
 calls and source validation remain in the main process.
+
+The sequential full-suite run is superseded by four disjoint shards of the same
+327 records. Its partial output remains in `candidate-final.txt`; it is not
+added to the new recovery count. `check.py --shard INDEX 4` selects the indices
+congruent to INDEX modulo 4, without changing target output cap or any predicate.
+All four exit statuses and their union of case names must be checked before
+claiming suite completion. This is scheduling, not a smaller search family or
+a new construction round. No wall-clock limit is introduced.
