@@ -178,9 +178,28 @@ def cover_graph(cnf, prefix):
 
 
 def forward(source):
+    labels, trees = inputs(source)
+    whole = tuple(range(len(labels)))
+    if trees[0].restriction(whole)[2] == trees[1].restriction(whole)[2]:
+        return dict(problem='dfvs',vertices=[],arcs=[])
+    blocks = [(leaf,) for leaf in whole]
+    while True:
+        for a,b in itertools.combinations(range(len(blocks)),2):
+            merged = tuple(sorted(blocks[a]+blocks[b]))
+            proposal = [block for i,block in enumerate(blocks) if i not in (a,b)] + [merged]
+            proposal.sort()
+            if valid_partition(proposal,len(labels),trees):
+                blocks = proposal
+                break
+        else:
+            break
+    upper = len(blocks)
     vertices, arcs = [], []
-    for k in range(1,len(source['labels'])+2):
+    for k in range(2,upper+1):
         cnf, _ = formula(source,k)
+        if k < upper:
+            selector = cnf.variable()
+            cnf.clauses = [clause+(selector,) for clause in cnf.clauses] + [(-selector,)]
         vs,edges = cover_graph(cnf,str(k))
         vertices.extend(vs)
         for u,v in edges:
@@ -217,9 +236,12 @@ def valid_partition(blocks, m, trees):
 def extract(source, solution):
     labels, trees = inputs(source)
     m = len(labels)
+    whole = tuple(range(m))
+    if trees[0].restriction(whole)[2] == trees[1].restriction(whole)[2]:
+        return dict(problem='maaforest',components=[labels],num_components=1)
     chosen = set(solution['feedback_vertex_set'])
     best = None
-    for k in range(1,m+1):
+    for k in range(2,m):
         width = (k-1).bit_length()
         groups = {}
         for leaf in range(m):

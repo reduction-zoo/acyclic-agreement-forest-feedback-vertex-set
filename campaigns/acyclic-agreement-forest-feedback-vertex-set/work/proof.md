@@ -1,4 +1,4 @@
-# Parallel threshold reduction from MAAF to minimum DFVS
+# Rank thresholds and unit-gap covers: MAAF to minimum DFVS
 
 Let m=|X|+1 count all labels, including the added root label. The source and
 output encodings are fixed in `contract.md`. This proof describes `algorithm.py`.
@@ -87,6 +87,29 @@ Phi_k is satisfiable iff the input admits an acyclic agreement forest with at
 most k components. Every satisfying assignment decodes to one, and every such
 forest extends to a satisfying assignment. Phi_m is always satisfiable.
 
+## Certified pruning and unit-gap formulas
+
+First compare the full rooted labelled restrictions. If they agree, the optimum
+is one; F emits an empty digraph and G emits the single full-label block. This
+is invariant under node renaming. Otherwise the optimum is at least two.
+
+Starting from singleton blocks, repeatedly try every pair of current blocks in
+deterministic order, accept the first merge whose resulting partition passes the
+direct forest validator, and restart. Stop when no pair can merge. At most m-1
+merges occur and at most O(m^3) proposals are checked. Every accepted partition
+is a feasible acyclic agreement forest, so its final size U satisfies OPT<=U.
+Initially any two singleton labels can merge: their two-leaf restrictions agree,
+the connecting path meets no other labelled leaf, and all other components are
+singletons, so there is no ancestry cycle. Hence U<=m-1. No claim that this
+greedy procedure finds an optimum is needed or made. Emit only thresholds
+k=2,...,U. This is a polynomial feasibility heuristic inside F, not an oracle.
+
+For k<U, transform Phi_k by introducing a fresh selector z, replacing every
+clause C by C OR z, and adding the unit clause NOT z. Call this Psi_k. The unit
+forces z=false, so satisfiability and decoded source ranks are unchanged. For
+k=U use Phi_U unchanged, since the greedy forest witnesses its satisfiability.
+The rank-bit variable numbers do not change when the selector is appended.
+
 ## A CNF formula becomes a bidirected cover graph
 
 For every Boolean variable q create endpoints q_0,q_1 joined by an undirected
@@ -102,15 +125,25 @@ omit one true-literal occurrence from each clause clique. Conversely a cover
 of size L selects exactly one endpoint per variable and omits exactly one
 occurrence per clause. That occurrence's incident edge forces its literal's
 true endpoint to be selected. It therefore decodes to a satisfying assignment.
-Consequently whenever Phi_k is satisfiable, **every** minimum cover in its graph
+Consequently whenever a threshold formula is satisfiable, **every** minimum cover in its graph
 has size L_k and decodes to a satisfying assignment.
+
+For a guarded threshold formula, a cover of size L+1 always exists: select
+both endpoints of z and one endpoint of every other variable; in every guarded
+clause omit its z occurrence and select all other occurrences; omit the unit
+clause's occurrence. All occurrence edges are covered, including the negative
+selector occurrence's edge. Thus a guarded threshold optimum is exactly L when
+satisfiable and exactly L+1 otherwise. This promise removes an unnecessary
+optimization problem on unsatisfiable thresholds without weakening the target's
+global-optimality contract. The unguarded final threshold is satisfiable and
+therefore has optimum L.
 
 Replace every undirected edge by its two directed arcs. A DFVS must hit each
 resulting directed 2-cycle and is therefore a vertex cover. A vertex cover
 leaves no arc and is therefore a DFVS. The valid sets, including their optima,
 are exactly equal.
 
-F emits the disjoint union of these bidirected graphs over all k=1,...,m, using
+F emits the disjoint union of these bidirected graphs over k=2,...,U, using
 disjoint vertex namespaces. Any minimum DFVS restricts to a minimum DFVS of
 each threshold graph: otherwise replacing one restriction by a smaller solution
 strictly improves the whole. This statement includes all tied optima.
@@ -118,7 +151,10 @@ strictly improves the whole. This statement includes all tied optima.
 ## Recovery from an arbitrary minimum DFVS
 
 G reconstructs the leaf-rank bit numbering for each threshold k from the
-source label list and w=(k-1).bit_length(). It reads whether each corresponding
+source label list and w=(k-1).bit_length(). It examines k=2,...,m-1.
+Threshold namespaces omitted by F supply no selected true endpoints, so they
+propose a single all-zero-rank block. On this nonidentical-tree branch that
+block fails agreement and is rejected; no source optimization is repeated. It reads whether each corresponding
 true endpoint belongs to the target deletion set and partitions labels by the
 resulting bit values. It does not need to trust proposals from unsatisfiable
 thresholds. Each proposal passes a direct polynomial check of label coverage,
@@ -126,7 +162,8 @@ agreement of restrictions, connecting-subtree disjointness, and acyclicity of
 the component ancestry graph. G returns the accepted proposal with the fewest
 blocks; increasing threshold order breaks ties deterministically.
 
-Let OPT be the minimum possible source component count. Phi_OPT is satisfiable,
+Let OPT be the minimum possible source component count. On the nonidentical
+branch, 2<=OPT<=U, so its threshold is emitted and satisfiable.
 so the restriction of **any** minimum target DFVS to that threshold graph
 produces a satisfying rank assignment, hence a valid partition with at
 most OPT components. By definition it has exactly OPT components. Thus at least
@@ -148,10 +185,12 @@ the m-threshold union has O(m^4+m^3 log^2 m)=O(m^4) vertices and arcs (for
 asymptotically large m, log^2 m=O(m)). Vertex indices require O(log m) bits,
 giving O(m^4 log m) target encoding length. No numeric weight is expanded.
 
+The greedy feasibility search uses O(m^3) direct validations, each bounded by
+O(m^3) combinatorial operations. It therefore adds at most O(m^6) operations.
 The code's direct tree paths and triple calculations use at most polynomial
 extra work: precomputing pair LCAs with scans is O(m^3) per threshold; testing
 O(m^3) triples with O(m)-length path scans is O(m^4) per threshold. A conservative
-O(m^5 polylog(m)) bound covers graph construction excluding input-string costs.
+O(m^6 polylog(m)) bound covers all of F excluding input-string costs.
 Lexicographic sorting and parsing of arbitrary-length input labels and node ids
 adds polynomial work in |x|; bit lengths are never assumed unit-cost.
 
@@ -167,7 +206,7 @@ the required input bit lengths.
 
 This is a candidate proof awaiting independent review. Local formula diagnostics
 are not actual-target checks. Full prepared verification is recorded in Round
-005. The graph conversion uses classical SAT/vertex-cover and bidirection
+006. The graph conversion uses classical SAT/vertex-cover and bidirection
 constructions; no new complexity classification is claimed. The claimed
 contribution is an explicit, checked instance map and all-optima decoder for the
 fixed optimization endpoints. The earlier withdrawn source model is not used.

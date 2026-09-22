@@ -43,14 +43,18 @@ def connected_optima(target, cap=4):
     packing.extend(([v],1) for v in set(vertices)-unavailable)
     bound+=len(set(vertices)-unavailable)
     model.add(sum(kept.values())<=bound)
-    model.maximize(sum(kept.values()))
     solver=cp_model.CpSolver();solver.parameters.num_search_workers=1
-    status=solver.solve(model)
-    assert status==cp_model.OPTIMAL,solver.status_name(status)
-    size=sum(solver.value(x) for x in kept.values())
-    model.clear_objective();model.add(sum(kept.values())==size)
-    if size==bound:
-        for group,limit in packing:model.add(sum(kept[v] for v in group)==limit)
+    for size in range(bound,-1,-1):
+        bounded=model.clone()
+        bounded.add(sum(kept.values())==size)
+        if size==bound:
+            for group,limit in packing:bounded.add(sum(kept[v] for v in group)==limit)
+        status=solver.solve(bounded)
+        if status==cp_model.OPTIMAL:
+            model=bounded; break
+        assert status==cp_model.INFEASIBLE,solver.status_name(status)
+    else:
+        raise AssertionError('empty independent set must exist')
     outputs=[]
     for _ in range(cap):
         status=solver.solve(model)
