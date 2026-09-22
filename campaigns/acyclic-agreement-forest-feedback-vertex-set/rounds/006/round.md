@@ -102,3 +102,27 @@ This refines the planned structural threshold pruning and retains the same
 unit-gap composition and general O(m^4) graph-size bound. G need not repeat the
 greedy search; absent threshold namespaces decode to a full-label block, which
 is rejected for the nonidentical inputs on this branch.
+
+## Completed small-input suite and implementation boundary repair
+
+The four prepared shards for candidate `8b2e404` all exited zero. Their exact
+case-name union equals the fixed 327 records, without omissions or duplication:
+38,427 recoveries; 300 inputs capped at 128 target optima; 27 empty targets
+exhaustively checked. The additional 12 inputs and 33 recoveries also passed.
+These logs remain `shard-0.txt` through `shard-3.txt` and `verify.txt`.
+
+A separate legal-input boundary probe used identical 1,200-leaf caterpillars
+encoded as flat JSON nodes, whose optimum is known to be one without a solver.
+F raised RecursionError instead of returning the empty graph; the final traceback
+is `deep-tree-before.txt`. This is an implementation failure, not a counterexample
+to the rank characterization. The current implementation is not total on the
+admitted domain and cannot be accepted as-is. Replace recursive tree traversal
+and nested-tuple comparison by iterative traversal and explicit canonical shape
+strings. Remove unused descendant sets on that code path. Preserve the
+mathematical maps and rerun the whole prepared suite plus independent Verify
+and the depth regression. This is a routine implementation repair within the
+same round, not a new construction hypothesis.
+
+Experience extraction in progress: `research/experience/monotone-ranks-for-acyclic-forests.md`
+and `research/experience/guarded-threshold-cover-gap.md` record the general
+arguments with independent review explicitly pending.

@@ -1,0 +1,9 @@
+Identical 1200-leaf caterpillars, legal flat JSON input; expected empty target.
+exit_status: 1
+
+                            ^^^^^^^^^^^^^^^
+  File "/Users/xiweipan/Codes/reduction-zoo/acyclic-agreement-forest-feedback-vertex-set/campaigns/acyclic-agreement-forest-feedback-vertex-set/work/algorithm.py", line 20, in visit
+    self.children[index] = [visit(c, index) for c in node['children']]
+                            ^^^^^^^^^^^^^^^
+  [Previous line repeated 993 more times]
+RecursionError: maximum recursion depth exceeded
