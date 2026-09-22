@@ -189,8 +189,10 @@ giving O(m^4 log m) target encoding length. No numeric weight is expanded.
 The greedy feasibility search uses O(m^3) direct validations, each bounded by
 O(m^3) combinatorial operations. It therefore adds at most O(m^6) operations.
 The code's direct tree paths and triple calculations use at most polynomial
-extra work: precomputing pair LCAs with scans is O(m^3) per threshold; testing
-O(m^3) triples with O(m)-length path scans is O(m^4) per threshold. A conservative
+extra work. A pair-LCA query scans O(m) candidate ancestors and uses tuple
+membership tests of O(m) cost, so it costs O(m^2). There is no cached pair-LCA
+table. The O(m^2) pair queries cost O(m^4) per threshold; the O(m^3) triple
+queries cost O(m^5) per threshold. Over O(m) thresholds, a conservative
 O(m^6 polylog(m)) bound covers all of F excluding input-string costs.
 Lexicographic sorting and parsing of arbitrary-length input labels and node ids
 adds polynomial work in |x|; bit lengths are never assumed unit-cost.

@@ -1,0 +1,3 @@
+{"leaves": 3, "source_optimum": 2, "source_optima": 3, "vertices": 361, "arcs": 1050, "target_optimum": 198, "exhaustive_optimum_rank_projections": 3, "recovered_source_optima": 3, "forced_infeasible_rank_patterns": 0}
+{"leaves": 4, "source_optimum": 3, "source_optima": 6, "vertices": 2209, "arcs": 7692, "target_optimum": 1375, "exhaustive_optimum_rank_projections": 12, "recovered_source_optima": 6, "forced_infeasible_rank_patterns": 32}
+PASS: all projected target ties and all forced infeasible rank patterns recovered exact source optima.

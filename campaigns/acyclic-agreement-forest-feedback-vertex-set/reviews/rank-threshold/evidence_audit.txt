@@ -1,0 +1,6 @@
+PASS independent log audit: exact 327-name union, 38427 recoveries, 300 capped records.
+This audits retained log content, not fresh execution or historical process exit codes.
+Python: 3.12.11 (main, Jul 23 2025, 00:18:05) [Clang 20.1.4 ]
+OR-Tools: 9.15.6755
+Direct-objective targeted attempt: manually terminated for reformulation, exit 143, no result; not an oracle answer.
+Replacement check_recovery.py: graph-derived disjoint-clique surplus cardinalities, finite search, no timeout.
