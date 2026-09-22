@@ -1,115 +1,93 @@
-# Campaign state — Maximum Acyclic Agreement Forest → Minimum Directed Feedback Vertex Set
+# Campaign state — Maximum Acyclic Agreement Forest → Minimum DFVS
 
-## Fixed target
+## Current established result (2026-09-22)
 
-`campaigns/acyclic-agreement-forest-feedback-vertex-set/question.md` is
-immutable. A different theorem is a new campaign.
+The user requested a restart from Prepare. Preparation has been rebuilt against
+the unchanged definition in `question.md`. Its source oracle is cross-checked
+against an independent exhaustive partition implementation on 327 stored inputs;
+all minimum output sets agree. The target oracle is cross-checked against
+exhaustive deletion on 631 digraphs. See [work/preparation.md](work/preparation.md).
+
+**The previous candidate is withdrawn.** Both earlier source checkers and the
+candidate encoded acyclicity of a union of tree-node arcs, rather than acyclicity
+of the component ancestry graph. A change to internal node names in identical
+trees changes the old oracle optimum from 1 to 2. The previous claim that only
+solver capacity blocked completion is false. Old candidate/proof/verifier files
+are preserved in Git at `a056e65` and removed from current `work/`; raw evidence
+and rounds remain. No valid current reduction or proof is claimed.
 
 ## Authorization and budget
 
-- Authorized by the user on 2026-09-21: pick one `Construction open` rule from the
-  board and open a campaign under `~/Codes/reduction-zoo`.
-- Research round budget: **3**, the session default disclosed because the user
-  gave no number. Only the user extends it.
-- Any harness continuation budget (for example a DSH goal round limit or an
-  auto-continuation cap) is a guardrail and never the research round count; the
-  round table below is authoritative.
+- Original authorization: 2026-09-21, research this fixed question; default
+  allocation 3 rounds. The historical record charged all three below.
+- 2026-09-22: the user explicitly requested redoing the problem from Prepare.
+  Definition auditing, oracle repair and preparation do not consume a discovery
+  round. The next construction must be planned after committing this foundation;
+  no new construction is part of this Prepare record.
+- Historical round counts are retained, not reset or retroactively merged.
+  The third recorded round was target-verifier work, which the skill normally
+  treats as supporting verification rather than a new mathematical mechanism.
+  Historical distinct mathematical mechanisms: 2. No new mechanism attempted
+  in this preparation restart.
 
-## Capability probe (2026-09-21, re-probed at campaign resume)
+## Capability probe (2026-09-22)
 
-| Capability | Actual version / provider | Path | Status |
-|---|---|---|---|
-| python3 | 3.14.7 | `/opt/homebrew/bin/python3` | ok |
-| uv | 0.12.7 | `~/.local/bin/uv` | ok |
-| git | 2.55.0, identity `Xiwei Pan <xiwei.pan@connect.hkust-gz.edu.cn>` | `/opt/homebrew/bin/git` | ok |
-| z3 | 5.1.0 (binary and Python module) | `/opt/homebrew/bin/z3` | ok; candidate route for exact minimum-cardinality oracles |
-| ortools | 9.15.6755 | Python module | ok; independent CP-SAT route |
-| networkx / numpy / scipy / pulp | 3.6.1 / 2.5.3 / 1.17.1 / 3.3.0 | Python modules | ok |
-| ripgrep | 15.2.0 | `/Users/xiweipan/.codex/packages/standalone/releases/0.155.1-aarch64-apple-darwin/codex-path/rg` | ok |
-| typst | 0.15.1 | `/opt/homebrew/bin/typst` | ok |
-| PDF rasterizers | pdftoppm, pdftocairo, gs | `/opt/homebrew/bin` | ok |
-| lean / lake | 4.34.0 / 5.0.0 | `~/.elan/bin` | ok |
-| `how-to-technical-writing` skill | installed | `~/.agents/skills/how-to-technical-writing` | ok |
-| `web_fetch` for primary sources | works (HTTP 200 to `https://example.com/`) | harness | ok; shell `curl` remains a fallback, and the method used must be recorded |
-| Reviewer registration | Codex `research-reviewer` child route; DSH preset also present in the repository | `.codex/agents/research-reviewer.toml`; `harness/dsh/presets/research` | Codex route available in this session; `DSH_HOME` and the DSH binary are unset/unavailable, so the DSH preset is not mounted |
-| Formal proof comparator (Comparator / nanoda / lean4checker) | absent | — | pending; blocks final formal certification only, and no formal verification has been requested |
+| Tool/capability | Actual version/provider | Status |
+|---|---|---|
+| Python | uv environment, 3.12.11 | verified by command |
+| uv | 0.12.7 | verified by command |
+| Z3 | 4.15.4, `z3-solver==4.15.4.0` in `uv.lock` | installed and exercised |
+| Typst | 0.15.1 | executable verified; no manuscript yet |
+| Lean / Lake | 4.34.0 / 5.0.0 | executable verified |
+| Mathlib | no campaign Lake project | pending; formalization not requested |
+| External writing skill | `/Users/xiweipan/.agents/skills/how-to-technical-writing/SKILL.md` | path found; load when writing |
+| Web | web tool read author-hosted PDF | available; lookup recorded in preparation |
+| Reviewer | `research-reviewer` role exposed by spawn tool; `.codex/agents/research-reviewer.toml` exists | registered, not invoked; no current complete candidate |
 
-The current Codex web tool is available for primary-source lookup; the fetch
-method and date will be recorded with any literature evidence. The formal proof
-comparators remain pending and block only optional final formal certification.
+Old global Python/Z3 versions and the old harness availability claims are not
+used for current reproduction. `uv sync --locked` supplies the tested dependency.
 
-## Round table
+## Historical round table
+
+These are the original attempts, with their evidence scope corrected by the
+Prepare audit. They are not current correctness evidence.
 
 | Round | Mechanism / standalone literature scope | First discriminating check | Outcome | Record |
 |---|---|---|---|---|
-| 1 | Cycle Killer 2012 / upstream issue 1047 exactness audit | Does Section 4 provide exact global recovery from every minimum DFVS? | refuted for direct reuse: only restricted-splitting approximation guarantees | [rounds/001/round.md](rounds/001/round.md) |
-| 2 | Exact MAAF verifier CNF -> weighted vertex cover -> unweighted DFVS clone groups | Do minimum formula assignments and the resulting cover outputs decode to minimum forests on every prepared case? | local exact formula checks supported the construction; full target harness was an execution failure after the first expanded graph, so target-side verification remains pending | [rounds/002/round.md](rounds/002/round.md) |
-| 3 | Independent twin-group weighted-cover and CP-SAT target verification | Can an exact solver certify the first unresolved expanded target and provide a minimum output for recovery? | execution failure: CP-SAT found only a feasible incumbent on `common_cherry_4`; no target optimum was inferred | [rounds/003/round.md](rounds/003/round.md) |
+| 1 | Cycle Killer exactness audit | Does the cited construction recover every globally optimal source solution? | Direct reuse rejected; approximation/restricted splitting only | [001](rounds/001/round.md) |
+| 2 | Source CNF -> weighted cover -> clone DFVS | Do minimum assignments decode to valid minimum forests? | Source semantics invalidated by the 2026-09-22 audit; earlier target run also interrupted | [002](rounds/002/round.md) |
+| 3 | Twin-group / CP-SAT target verification | Can an expanded target optimum be certified? | Execution failure; no optimum certificate, and source model now invalidated | [003](rounds/003/round.md) |
 
-The budget is 3; used 3, remaining 0; distinct mathematical mechanisms attempted 2. Prepare
-is complete: both endpoint oracles run, all nine source fixtures have
-independently reproduced optima, and the source validator exercises malformed
-and suboptimal outputs. Round 1 found no exact reuse of Cycle Killer. Round 2
-left an executable candidate and a general proof, with independent target-side
-verification pending after the positional, weighted Z3 and CP-SAT target
-solvers did not certify the larger expanded graphs.
+## Current preparation checks
 
-## Artifacts
+- 327 source input records: all 236 ordered tree pairs through 4 leaves,
+  80 seeded pairs on 5–7 leaves, 9 old named inputs, and 2 explicit regressions.
+- 113,194 label partitions: direct predicate agrees with independent enumeration.
+- 956 minimum source partitions: complete set agreement, including 177 input
+  records with multiple optima; every optimum also survives node/child reordering
+  and independent node renaming.
+- 631 target digraphs: all 531 on 0–3 vertices including self-loops, plus 100
+  seeded graphs on 4–8 vertices. All 766 minimum deletion sets agree.
+- The actual subprocess candidate harness accepts a controlled correct decoder
+  on both optima of a 2-cycle and rejects a decoder faulty only on the alternate
+  optimum, malformed output, and process failure. These are checker tests,
+  not reduction results.
+- Retained evidence: [generation](work/evidence/prepare-restart/generate.txt),
+  [self-test](work/evidence/prepare-restart/self-test.txt),
+  [old-oracle counterexample](work/evidence/prepare-restart/audit-output.txt).
 
-- `question.md` fixed. `work/contract.md`, `work/cases.json`, `work/check.py`,
-  `work/preparation.md` and `work/evidence/` now contain the completed Prepare
-  foundation.
-- `work/algorithm.py` and `work/proof.md` contain the current candidate. Round
-  002 retains the local formula-all-optima check and the interrupted target
-  harness run. No `reviews/` or `formal/` content. No `pyproject.toml` or
-  `uv.lock`: `check.py` uses only the standard library plus the environment's Z3,
-  so no Python project has been created yet; add one when the foundation first
-  needs a locked dependency.
-- Copied into this repository with relative paths intact: `.agents/skills/`
-  (research skills and `find-open-problems`), `research/` specifications except
-  the board-local `research/experience/entries/` collection, `harness/` and
-  `.codex/agents/research-reviewer.toml`.
+No actual new candidate has been tested. No independent candidate review has
+occurred. Finite test coverage does not establish the universal reduction theorem.
 
-## Checks
+## Experience and next action
 
-- `python3 check.py --self-test` — 236 checks, 0 failures; retained in
-  `work/evidence/self-test-output.txt`. All nine source optima and their minimum
-  cut-pair counts are stored and asserted.
-- `python3 evidence/agreement_forest_reference.py` — independent source values
-  and cut-pair counts agree on all nine fixtures; retained in
-  `work/evidence/agreement-forest-reference-output.txt`.
-- Target-side oracle validated on 30 seeded random digraphs (exhaustive subset
-  enumeration agrees with the Z3 decision oracle; every returned set passes the
-  explicit Kahn check) and on the deliberate valid/invalid fixtures.
-- `python3 evidence/rspr_reference.py` — independent rSPR distances; retained in
-  `work/evidence/rspr-distances.txt`.
-- Candidate source-CNF verification: up to 16 minimum formula assignments per
-  prepared case decoded to forests accepted by the independent validator; see
-  [rounds/002/formula-optimum-check.txt](rounds/002/formula-optimum-check.txt).
-- Independent target-side verification: one minimum target output for each of
-  `one_leaf`, `two_leaves_identical`, `three_leaves_identical` and `rSPR1_3`
-  decoded to a valid globally minimum forest; see
-  [work/verification.md](work/verification.md) and
-  [work/evidence/verify-small-output.txt](work/evidence/verify-small-output.txt).
-- Round 003's independent CP-SAT probe found only a feasible incumbent on the
-  first unresolved four-leaf target; see
-  [rounds/003/cp-sat-output.txt](rounds/003/cp-sat-output.txt). It is not an
-  oracle answer.
-- `python3 work/check.py --candidate work/algorithm.py` was started. It emitted
-  a legal 1,118-vertex target for `one_leaf`, then its independent target
-  oracle run was manually interrupted; see
-  [rounds/002/candidate-harness-interruption.txt](rounds/002/candidate-harness-interruption.txt).
+The existing CNF-to-DFVS entry has been corrected to retract its former MAAF
+application. One new entry records the concrete failure of node-id-dependent
+ancestry checking. This restart creates 1 experience entry and updates 1; no
+entry is pending promotion or used as evidence by its mere presence.
 
-## Review
-
-None. The candidate has not passed the complete independent target-side suite,
-so review is premature. The Codex reviewer registration is available and will
-be used after the candidate and its proof pass the relevant checks.
-
-## Next action
-
-The authorized three-round campaign is stopped with an incomplete candidate.
-The forward/recovery proof and four independent minimum-target checks are
-preserved, but complete target-side verification and independent review remain
-required. Resume only with additional round authorization or a smaller exact
-target construction; do not treat feasible solver incumbents as target optima.
+After the preparation commit, the next responsibility is Propose using the
+label-partition contract and the full prepared candidate suite. The source model
+must represent connecting-subtree disjointness and **component** ancestry. Any
+candidate must pass the whole actual-target/recovery loop, including alternate
+optimal target outputs, before independent review.

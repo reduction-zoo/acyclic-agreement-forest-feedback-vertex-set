@@ -1,0 +1,10 @@
+Date: 2026-09-22
+Baseline revision: a056e65
+Command: uv run --locked python campaigns/acyclic-agreement-forest-feedback-vertex-set/work/evidence/prepare-restart/reproduce_old.py
+Expected source optimum: 1 (identical rooted labelled trees)
+Actual old source optimum: 2; status: ok
+Cause: acyclicity tested on union of tree-node arcs with shared internal ids,
+not on the graph of component ancestry fixed by question.md.
+The old reference and candidate use the same wrong predicate. Previous source
+cross-check agreement and candidate formula checks do not discharge this defect.
+The former claim that only solver capacity blocked validation is withdrawn.

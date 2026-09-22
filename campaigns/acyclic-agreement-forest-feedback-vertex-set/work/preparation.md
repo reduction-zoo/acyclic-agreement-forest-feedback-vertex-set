@@ -1,116 +1,133 @@
-# Preparation — testing foundation status
+# Prepare — definition-based restart, 2026-09-22
 
-Stage: **Prepare** (2026-09-21). This record states the current foundation
-honestly. Preparation establishes no reduction-correctness claim.
+The user requested a restart from Prepare. The fixed mathematical question is
+unchanged. This foundation replaces the source semantics implemented at a056e65;
+previous candidate-correctness evidence is withdrawn, not reused.
 
-Commands:
+## Definition audit and retained counterexample
+
+The fixed question defines a graph **on forest components**, with an arc when
+one component root is an ancestor of another in either input tree. The previous
+checker instead took the union of component **tree edges on shared node ids**.
+It also required the input trees to share internal ids and their root id.
+These are different predicates. Two identical labelled caterpillar trees, with
+only two internal ids interchanged in the second tree, have source optimum 1;
+the old checker reports 2. See
+[evidence/prepare-restart/internal-renaming.json](evidence/prepare-restart/internal-renaming.json)
+and the executable [reproducer](evidence/prepare-restart/reproduce_old.py).
+
+Primary-source corroboration was retrieved with the web tool on 2026-09-22:
+Linz, Semple and Stadler, *Analyzing and reconstructing reticulation networks
+under timing constraints*, Section 4.1, printed page 14, explicitly defines
+vertex-disjoint connecting subtrees and the directed graph on components:
+<https://www.math.canterbury.ac.nz/~c.semple/papers/LSS10.pdf>.
+A PMC fetch was blocked by a browser challenge; the author-hosted PDF was read.
+This lookup verifies the fixed definition, not a new construction round.
+
+`contract.md` now encodes outputs directly as label partitions. Cut-pair
+representations are not counted as distinct forest outputs. The old nine
+source optima happen to agree with the corrected values; that coincidence did
+not detect the modelling error. Their original inputs and previous values are
+retained in `evidence/prepare-restart/legacy-source-cases.json`.
+
+## Declared finite coverage
+
+| Source family | Instances |
+|---|---:|
+| All ordered pairs of rooted binary labelled trees on 1 leaf | 1 |
+| Same, 2 leaves | 1 |
+| Same, 3 leaves | 9 |
+| Same, 4 leaves | 225 |
+| Seeded distinct ordered pairs on 5 leaves | 32 |
+| Seeded distinct ordered pairs on 6 leaves | 32 |
+| Seeded distinct ordered pairs on 7 leaves | 16 |
+| Previous named inputs, recomputed | 9 |
+| Internal-id permutation regression | 1 |
+| Agreement forest with an ancestry 2-cycle | 1 |
+| Total stored input records | 327 |
+
+Counts are records; regressions deliberately overlap the exhaustive topological
+family. `prepare.py` constructs each unordered-child tree once by placing the
+smallest label on the left of every recursive bipartition. There are 1, 1, 3,
+and 15 such trees through four leaves. Both orders of each tree pair are tested.
+The larger-family sampling uses Python `random.Random(20260922)` without
+replacement among ordered pairs. The committed JSON fixes the actual inputs.
+
+The reference enumerates **all** label partitions for every source input,
+including the root label. The self-test compares feasibility on 113,194
+partitions and compares the complete sets of 956 minimum partitions across
+327 records. Every minimum partition is also checked after independent node
+renaming, node-list reversal and child-order reversal. These metamorphic checks
+are additional output checks, not additional stored source instances.
+
+Target coverage: all 531 digraphs on 0–3 vertices, including self-loops, plus
+20 seeded graphs for each size 4–8 (100 more). All 766 minimum target sets in
+these 631 records are cross-checked. Empty input, empty optimal deletion,
+self-loops, multiple optima and capped-enumeration reporting are exercised.
+
+A hand-constructed forest `{a,b}, {c,d}, {ρ}` agrees and has disjoint connecting
+subtrees in the two opposite caterpillars, but its component ancestry graph has
+a 2-cycle. It must be rejected. Hand-known singleton/identical-tree optima,
+three-leaf optimum 2 with three minimum partitions, malformed outputs,
+suboptimal singleton partitions, and malformed trees are asserted explicitly.
+Controlled subprocess fixtures exercise the actual candidate harness, including
+a decoder correct on one target optimum but suboptimal on the other, non-JSON
+output, and nonzero process exit.
+
+## Independent oracles and correspondence
+
+`check.py` uses Z3 4.15.4, locked as `z3-solver==4.15.4.0`, with Python 3.12.11.
+The source oracle enumerates nonempty label blocks only inside the finite test
+oracle (maximum 7 original leaves). It computes each block's restrictions and
+original connecting-subtree vertices. A Boolean selects each agreeing block.
+Exactly-one constraints cover each label; pairwise conflicts forbid intersecting
+connecting subtrees. If selected block roots are ancestral in either tree,
+integer ranks must increase. Thus a model is exactly an acyclic agreement
+forest: forward, a forest admits a topological ranking; backward, strict rank
+increase forbids every component cycle. Increasing exact cardinalities proves
+the first SAT cardinality globally minimum. Blocking selected block sets
+enumerates all optima until UNSAT. Returned partitions are checked directly.
+
+`source_reference.py` imports no project implementation. It enumerates set
+partitions, recursively prunes nested tree expressions, represents original
+vertices by root-to-node bit paths, and computes transitive closure of the
+component ancestry relation. This differs from the SMT oracle's vertex-index,
+LCA, conflict and ranking implementation. No source oracle imports or reads a
+candidate. Enumeration is appropriate as a small independent cross-check;
+it is not proposed as a polynomial-time reduction.
+
+The target SMT oracle uses one deletion Boolean and one integer rank per vertex.
+Each arc u->v requires `delete(u) or delete(v) or rank(u)<rank(v)`. This is
+satisfiable exactly when the remaining digraph is acyclic. Binary search over
+cardinality with conclusive SAT/UNSAT proves the optimum, then blocking deletion
+sets enumerates distinct minimum witnesses. Witness validity uses a separate
+vertex-removal DAG check. The target reference enumerates all deletion subsets
+and uses Floyd-Warshall closure, including diagonal cycles. Unknown is always
+an exception, never exhaustion or an optimum. Integer arithmetic is exact.
+
+## Reproduction and evidence
+
+From repository root:
 
 ```sh
-cd campaigns/acyclic-agreement-forest-feedback-vertex-set/work
-python3 check.py --self-test
-python3 evidence/agreement_forest_reference.py
-python3 evidence/rspr_reference.py
+uv sync --locked
+uv run --locked python campaigns/acyclic-agreement-forest-feedback-vertex-set/work/prepare.py --generate
+uv run --locked python campaigns/acyclic-agreement-forest-feedback-vertex-set/work/check.py --self-test
+uv run --locked python campaigns/acyclic-agreement-forest-feedback-vertex-set/work/evidence/prepare-restart/reproduce_old.py
 ```
 
-The foundation uses only the standard library plus the environment's Z3 module;
-no Python project is needed yet.
+Retained outputs: `evidence/prepare-restart/generate.txt`, `self-test.txt`, and
+`audit-output.txt`. The previous logs remain historical evidence of the old
+predicate, not checks of the fixed problem. No wall-clock or solver timeout is
+used. Candidate checks execute every stored input and report distinct target
+outputs and enumeration completeness separately; they cannot be replaced by
+source-only or formula-only checks.
 
-## 1. What is complete
+## Limits
 
-| Artifact | State |
-|---|---|
-| `contract.md` | Fixed JSON encodings for both endpoints, legality predicates, the source model, the candidate CLI contract and the checker interface |
-| `cases.json` | Nine source fixtures with stored optima and minimum cut-pair counts, plus target-side validity fixtures |
-| `check.py` source oracle | Exhaustive search over all cut subsets of both trees for instances with at most 7 leaves, block-restriction signatures, explicit acyclicity filtering and an output validator |
-| `check.py` target oracle | Exhaustive subset enumeration and a Z3 positional-acyclicity decision oracle, with explicit Kahn witness validation |
-| `evidence/agreement_forest_reference.py` | Standalone JSON-based cut enumeration with an independent augmented-tree representation and restriction renderer |
-| `evidence/rspr_reference.py` | Independent breadth-first search over rooted subtree prune and regraft moves |
-
-The target oracle is validated on 30 seeded random digraphs with 1–6 vertices:
-the exhaustive and Z3 decisions agree, every returned set passes the explicit
-Kahn check and has minimum cardinality, and the deliberate validity fixtures
-behave as required.
-
-## 2. Source oracle results
-
-```
-one_leaf                 |F|=1  n_min_cut_pairs=1
-two_leaves_identical     |F|=1  n_min_cut_pairs=1
-three_leaves_identical   |F|=1  n_min_cut_pairs=1
-identical_4              |F|=1  n_min_cut_pairs=1
-common_cherry_4          |F|=1  n_min_cut_pairs=1
-rSPR1_3                  |F|=2  n_min_cut_pairs=3
-quartet_swap_4           |F|=3  n_min_cut_pairs=14
-quartet_swap_other_4     |F|=3  n_min_cut_pairs=14
-pseudorooted_5          |F|=3  n_min_cut_pairs=10
-```
-
-The counts are cut-pair representations accepted by the fixed output encoding;
-the objective is the component count. Every optimum round-trips through the
-source output encoding and validates: component vertex sets are disjoint and
-cover both trees, label sets partition `X ∪ {ρ}`, paired component trees agree,
-and the union of component arc sets is acyclic.
-
-## 3. The modelling decision
-
-`contract.md` §1.3 fixes the cut-based model. A cut partitions each augmented
-tree into labelled parts. For a part with label block `B`, agreement compares the
-rooted labelled restriction on the minimal subtree `T[B]`, with unlabelled leaves
-deleted and unlabelled degree-2 vertices suppressed. The output retains each
-cut part's vertex set and component arcs so the validator can check coverage,
-disjointness and the acyclicity relation. This is the model used by the cited
-agreement-forest literature and by the repaired oracle.
-
-## 4. Repaired discrepancy
-
-The earlier source oracle rendered a component's key from the entire cut part.
-For `T1 = ((a,b),c)`, `T2 = ((a,c),b)`, cutting `(a,n3)` in both trees gives
-the block `{b,c,ρ}`. The two cut parts retain different containing shapes if
-rendered directly, although their restrictions to `T[{b,c,ρ}]` are the same
-cherry. That implementation defect reported `|F|=3` instead of `|F|=2`.
-
-The repaired implementation derives the key from the block restriction and
-filters matched cut pairs through the explicit acyclicity predicate. The
-independent reference reproduces every stored value, including the formerly
-pending cases:
-
-| Instance | source oracle | independent reference | rSPR distance |
-|---|---:|---:|---:|
-| `T1 = T2 = ((a,b),(c,d))` | 1 | 1 | 0 |
-| quartet swap | 3 | 3 | 2 |
-| mirror quartet swap | 3 | 3 | 2 |
-| `T1 = ((a,b),c)`, `T2 = ((a,c),b)` | 2 | 2 | 1 |
-| five-leaf fixture | 3 | 3 | 2 |
-
-The rSPR values are a cross-check only; the source oracle's ground truth is the
-fixed cut-based, acyclic-agreement-forest definition.
-
-## 5. Finite bounds
-
-- Source search family: all cut subsets of both trees, admitted only for
-  instances with at most `SOURCE_ORACLE_LEAF_CAP = 7` leaves.
-- Target oracle: exhaustive subset enumeration up to
-  `EXHAUSTIVE_DFVS_VERTEX_CAP = 18` vertices; otherwise the Z3 decision oracle.
-- Distinct minimum target sets passed to `--extract` per instance:
-  `OPTIMAL_DFVS_ENUM_CAP = 128`.
-
-No wall-clock, solver, subprocess or wrapper timeout appears anywhere. A harness
-limit that kills a run is an execution failure, not an oracle answer.
-
-## 6. Retained evidence
-
-- `evidence/self-test-output.txt` and `evidence/self-test-exit.txt` — the current
-  self-test run.
-- `evidence/agreement-forest-reference-output.txt` — independent source-oracle
-  values and minimum cut-pair counts.
-- `evidence/rspr-distances.txt` — independent rSPR distances.
-- `evidence/agreement_forest_reference.py` — the executable independent source
-  cross-check.
-
-## 7. Consequence for the campaign
-
-Preparation is complete for the declared finite domain: both endpoints have
-independent executable checks, the disputed source fixtures are resolved, and
-incorrect, suboptimal and malformed outputs are exercised. The next action is to
-commit this testing foundation and begin Propose; no research round has been
-consumed.
+Finite tests do not establish a general theorem. Larger source pairs are sampled,
+not exhaustive. Candidate target graphs may exceed the target oracle's practical
+capacity; that would leave verification pending, not permit shrinking away the
+prepared suite. Candidate checks enumerate at most 128 target optima per input
+and explicitly report truncation. This Prepare stage establishes no valid
+candidate and no independent review of a candidate.

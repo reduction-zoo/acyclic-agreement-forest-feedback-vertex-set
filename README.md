@@ -32,10 +32,11 @@ globally minimum acyclic agreement forest of the source, ties included.
 
 ## Status
 
-Open; Prepare is complete and no construction attempt has been made. The finite
-source and target oracles are green, and the independent source cross-check
-reproduces all nine stored optima. Nothing here is a correctness, novelty or
-verification result for a reduction.
+Prepare was rebuilt on 2026-09-22 after a reproducible source-definition error
+invalidated the former candidate and its checker evidence. There is currently
+no valid candidate proof. The new foundation checks 327 source inputs and 631
+target digraphs against independent exhaustive references, including all minimum
+outputs in those finite families. See the [preparation report](campaigns/acyclic-agreement-forest-feedback-vertex-set/work/preparation.md).
 
 ## Layout
 
@@ -51,15 +52,13 @@ verification result for a reduction.
 
 ## Reproduction
 
-No Python project exists yet; the current foundation uses only the installed
-standard library and Z3 module. Run the checks from the work directory:
+From the repository root:
 
 ```sh
-cd campaigns/acyclic-agreement-forest-feedback-vertex-set/work
-python3 check.py --self-test
-python3 evidence/agreement_forest_reference.py
+uv sync --locked
+uv run --locked python campaigns/acyclic-agreement-forest-feedback-vertex-set/work/check.py --self-test
 ```
 
-The tool versions this machine actually provides are recorded in the capability
-probe in `state.md`. The Codex reviewer registration in `.codex/agents/` is used
-when a complete candidate and proof are ready.
+The dataset generator, retained counterexample and finite coverage are documented
+in `work/preparation.md`. The withdrawn candidate and proof remain in Git at
+`a056e65`; their old test results do not establish the fixed source predicate.

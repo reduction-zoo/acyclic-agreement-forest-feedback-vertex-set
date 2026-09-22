@@ -1,0 +1,14 @@
+ground truth established: 25
+ground truth established: 50
+ground truth established: 75
+ground truth established: 100
+ground truth established: 125
+ground truth established: 150
+ground truth established: 175
+ground truth established: 200
+ground truth established: 225
+ground truth established: 250
+ground truth established: 275
+ground truth established: 300
+ground truth established: 325
+generated: 327 source instances, all minimum partition sets cross-checked

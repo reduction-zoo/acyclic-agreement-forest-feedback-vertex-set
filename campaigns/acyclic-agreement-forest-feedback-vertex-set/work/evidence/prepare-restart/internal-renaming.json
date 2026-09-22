@@ -1,0 +1,108 @@
+{
+  "problem": "maaforest",
+  "labels": [
+    "a",
+    "b",
+    "c",
+    "d"
+  ],
+  "root_label": "ρ",
+  "t1": {
+    "root": "top",
+    "nodes": [
+      {
+        "id": "a",
+        "children": [],
+        "label": "a"
+      },
+      {
+        "id": "b",
+        "children": [],
+        "label": "b"
+      },
+      {
+        "id": "c",
+        "children": [],
+        "label": "c"
+      },
+      {
+        "id": "d",
+        "children": [],
+        "label": "d"
+      },
+      {
+        "id": "low",
+        "children": [
+          "a",
+          "b"
+        ],
+        "label": null
+      },
+      {
+        "id": "mid",
+        "children": [
+          "low",
+          "c"
+        ],
+        "label": null
+      },
+      {
+        "id": "top",
+        "children": [
+          "mid",
+          "d"
+        ],
+        "label": null
+      }
+    ]
+  },
+  "t2": {
+    "root": "top",
+    "nodes": [
+      {
+        "id": "a",
+        "children": [],
+        "label": "a"
+      },
+      {
+        "id": "b",
+        "children": [],
+        "label": "b"
+      },
+      {
+        "id": "c",
+        "children": [],
+        "label": "c"
+      },
+      {
+        "id": "d",
+        "children": [],
+        "label": "d"
+      },
+      {
+        "id": "mid",
+        "children": [
+          "a",
+          "b"
+        ],
+        "label": null
+      },
+      {
+        "id": "low",
+        "children": [
+          "mid",
+          "c"
+        ],
+        "label": null
+      },
+      {
+        "id": "top",
+        "children": [
+          "low",
+          "d"
+        ],
+        "label": null
+      }
+    ]
+  }
+}

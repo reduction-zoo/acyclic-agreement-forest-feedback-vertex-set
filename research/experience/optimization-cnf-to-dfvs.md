@@ -19,12 +19,17 @@ baseline. An unsatisfied clause costs an extra (B), which is larger than any
 possible saving in the designated objective. Selecting both endpoints of a
 variable costs an extra (B), so every minimum cover selects one endpoint per
 variable and every minimum cover decodes to a minimum satisfying assignment.
-In the clone graph, every minimum independent set contains either all or none
+In the clone graph, every maximum independent set contains either all or none
 of each clone group because a group's clones have identical neighbourhoods;
 complementation gives the same property for every minimum vertex cover and
 therefore every minimum DFVS.
 
-Round 002 applied this construction to a polynomial CNF encoding of MAAF. Up
+Round 002 applied this construction to a purported polynomial CNF encoding of MAAF.
+**Correction (2026-09-22):** that source encoding and both original source
+checkers used tree-node arc unions instead of component ancestry. Its MAAF
+application is withdrawn; the generic CNF/cover argument is a separate claim.
+See [Prepare audit](../../campaigns/acyclic-agreement-forest-feedback-vertex-set/work/preparation.md).
+The following records the historical, invalidated evidence. Up
 to 16 minimum CNF assignments per prepared source case all decoded to valid
 minimum forests. The independent positional DFVS harness did not finish its
 first expanded graph before manual interruption, so the construction is a
@@ -47,4 +52,4 @@ incumbent, so this compression does not discharge target-side verification.
 ## Evidence links
 
 - [Round 002](../../campaigns/acyclic-agreement-forest-feedback-vertex-set/rounds/002/round.md)
-- [Candidate proof](../../campaigns/acyclic-agreement-forest-feedback-vertex-set/work/proof.md)
+- Historical candidate and proof: Git revision `81e6d3a`, `work/algorithm.py` and `work/proof.md`.
