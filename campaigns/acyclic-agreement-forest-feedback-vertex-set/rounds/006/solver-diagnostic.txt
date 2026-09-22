@@ -1,0 +1,8 @@
+start 1493 3:v:2:0 899 0
+answer sat
+start 713 2:v:1:0 474 0
+answer unsat
+start 713 2:v:1:0 474 1
+answer sat
+start 3 3:v:1:0 1 0
+answer sat

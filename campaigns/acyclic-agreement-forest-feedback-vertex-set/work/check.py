@@ -254,15 +254,18 @@ def solve_bidirected(vertices, arcs, cap):
     solver.add([z3.Or(chosen[u],chosen[v]) for u,v in arcs if u<=v])
     for group,bound in groups:
         solver.add(z3.PbGe([(chosen[v],1) for v in group],bound))
-    terms = [(chosen[v],1) for v in vertices]
+    # Each packed clique contributes its lower bound or exactly one extra.
+    # Counting only these extras avoids a large redundant cardinality constraint.
+    extras = []
+    for i,(group,bound) in enumerate(groups):
+        if bound == len(group): continue  # forced loop vertex
+        extra = z3.Bool(f'extra{i}')
+        solver.add(extra == z3.And([chosen[v] for v in group]))
+        extras.append((extra,1))
+    extras.extend((chosen[v],1) for v in vertices if v not in used)
     for optimum in range(lower,len(vertices)+1):
         solver.push()
-        solver.add(z3.PbEq(terms,optimum))
-        if optimum == lower:
-            # Tight sum of disjoint valid lower bounds forces each bound tight.
-            for group,bound in groups:
-                solver.add(z3.PbEq([(chosen[v],1) for v in group],bound))
-            solver.add([z3.Not(chosen[v]) for v in vertices if v not in used])
+        solver.add(z3.PbEq(extras,optimum-lower) if extras else optimum==lower)
         result = solver.check()
         if result == z3.sat: break
         if result != z3.unsat: raise RuntimeError('target optimum unknown')

@@ -10,3 +10,5 @@ formulas=225 thresholds=1111 decoded=505
 formulas=250 thresholds=1250 decoded=564
 formulas=275 thresholds=1407 decoded=649
 formulas=300 thresholds=1582 decoded=728
+formulas=325 thresholds=1749 decoded=810
+PASS instances=327 thresholds=1759 decoded=815

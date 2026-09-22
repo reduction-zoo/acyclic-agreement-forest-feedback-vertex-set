@@ -1,0 +1,2 @@
+PASS independent CP-SAT oracle: 75 bidirected graphs, all optima
+PASS unit-gap cover: all 256 subsets of the eight nonempty two-variable clauses

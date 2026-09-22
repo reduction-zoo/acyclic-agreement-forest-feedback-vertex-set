@@ -164,7 +164,7 @@ blocks; increasing threshold order breaks ties deterministically.
 
 Let OPT be the minimum possible source component count. On the nonidentical
 branch, 2<=OPT<=U, so its threshold is emitted and satisfiable.
-so the restriction of **any** minimum target DFVS to that threshold graph
+The restriction of **any** minimum target DFVS to that threshold graph
 produces a satisfying rank assignment, hence a valid partition with at
 most OPT components. By definition it has exactly OPT components. Thus at least
 one proposal is valid, all accepted proposals have at least OPT components,
@@ -177,8 +177,9 @@ minimum target output, not only outputs built from source solutions.
 
 All augmented trees have O(m) vertices. At threshold k, there are O(m log m)
 rank bits, O(m^2 log m) equality/comparison gates, and O(m^3) disagreeing-triple
-clauses. Clause width is at most max(4,ceil(log_2 m)+1): the only unbounded
-fan-in gate conjoins bit equalities. Total literal count is
+clauses. Before guarding, clause width is at most max(4,ceil(log_2 m)+1):
+the only unbounded fan-in gate conjoins bit equalities. Guarding adds one
+literal per original clause. Total literal count is
 O(m^3+m^2 log m), and total squared clause width is
 O(m^3+m^2 log^2 m). Thus one cover graph has that order of vertices/edges, and
 the m-threshold union has O(m^4+m^3 log^2 m)=O(m^4) vertices and arcs (for

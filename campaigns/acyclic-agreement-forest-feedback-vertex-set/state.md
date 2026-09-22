@@ -14,14 +14,18 @@ of the component ancestry graph. A change to internal node names in identical
 trees changes the old oracle optimum from 1 to 2. The previous claim that only
 solver capacity blocked completion is false. Old candidate/proof/verifier files
 are preserved in Git at `a056e65` and removed from current `work/`; raw evidence
-and rounds remain. No valid current reduction or proof is claimed.
+and rounds remain. The replacement candidate at `8b2e404` has a general rank-characterization proof;
+full actual-target verification is in progress, so it is not an accepted result.
 
 ## Authorization and budget
 
 - 2026-09-22 continuation: user authorized up to **20 additional rounds**.
-  New allocation used: 1 in progress (004), remaining: 19. Historical 3
-  retained; total allocation 23, total started 4. Round 004 uses parallel
-  thresholds and unweighted CNF covers; see `rounds/004/round.md`.
+  New allocation used: 3 started (004–006), remaining: 17. Historical 3
+  retained; total allocation 23, total started 6. Five distinct mechanisms
+  appear in the table (Round 003 was supporting verification). Current Round
+  006 combines rank thresholds, certified feasible upper bounds, and unit-gap
+  covers; see `rounds/006/round.md`. Correctness and low graph overhead are both
+  user priorities; no minimum-overhead claim is required or made.
 
 - Original authorization: 2026-09-21, research this fixed question; default
   allocation 3 rounds. The historical record charged all three below.
@@ -42,26 +46,30 @@ and rounds remain. No valid current reduction or proof is claimed.
 | Python | uv environment, 3.12.11 | verified by command |
 | uv | 0.12.7 | verified by command |
 | Z3 | 4.15.4, `z3-solver==4.15.4.0` in `uv.lock` | installed and exercised |
+| OR-Tools / NetworkX | 9.15.6755 / 3.6.1, locked uv dependencies | installed; independent CP-SAT verifier / graph decomposition |
 | Typst | 0.15.1 | executable verified; no manuscript yet |
 | Lean / Lake | 4.34.0 / 5.0.0 | executable verified |
 | Mathlib | no campaign Lake project | pending; formalization not requested |
 | External writing skill | `/Users/xiweipan/.agents/skills/how-to-technical-writing/SKILL.md` | path found; load when writing |
 | Web | web tool read author-hosted PDF | available; lookup recorded in preparation |
-| Reviewer | `research-reviewer` role exposed by spawn tool; `.codex/agents/research-reviewer.toml` exists | registered, not invoked; no current complete candidate |
+| Reviewer | `research-reviewer` role exposed by spawn tool; `.codex/agents/research-reviewer.toml` exists | registered, not invoked; candidate checks pending |
 
 Old global Python/Z3 versions and the old harness availability claims are not
 used for current reproduction. `uv sync --locked` supplies the tested dependency.
 
 ## Historical round table
 
-These are the original attempts, with their evidence scope corrected by the
-Prepare audit. They are not current correctness evidence.
+Rounds 001–003 are historical attempts, with their evidence scope corrected by
+the Prepare audit. Later rounds use the rebuilt independent foundation.
 
 | Round | Mechanism / standalone literature scope | First discriminating check | Outcome | Record |
 |---|---|---|---|---|
 | 1 | Cycle Killer exactness audit | Does the cited construction recover every globally optimal source solution? | Direct reuse rejected; approximation/restricted splitting only | [001](rounds/001/round.md) |
 | 2 | Source CNF -> weighted cover -> clone DFVS | Do minimum assignments decode to valid minimum forests? | Source semantics invalidated by the 2026-09-22 audit; earlier target run also interrupted | [002](rounds/002/round.md) |
 | 3 | Twin-group / CP-SAT target verification | Can an expanded target optimum be certified? | Execution failure; no optimum certificate, and source model now invalidated | [003](rounds/003/round.md) |
+| 4 | Canonical component-slot CNF and parallel unweighted threshold covers | Independent source thresholds followed by actual target recovery | Inconclusive: local formulas passed, full target runs interrupted | [004](rounds/004/round.md) |
+| 5 | Monotone node ranks replace component slots, reducing graph order | All 1,759 source thresholds and actual target recovery | Inconclusive: local formulas passed; only 22 prepared records completed | [005](rounds/005/round.md) |
+| 6 | Unit-gap guarded covers with feasible-forest threshold pruning | Full fixed 327-record suite, 12 independent inputs, graph-size comparison | In progress; oracle self-tests pass, complete candidate checks pending | [006](rounds/006/round.md) |
 
 ## Current preparation checks
 
@@ -81,8 +89,11 @@ Prepare audit. They are not current correctness evidence.
   [self-test](work/evidence/prepare-restart/self-test.txt),
   [old-oracle counterexample](work/evidence/prepare-restart/audit-output.txt).
 
-No actual new candidate has been tested. No independent candidate review has
-occurred. Finite test coverage does not establish the universal reduction theorem.
+The current candidate is being tested on all 327 inputs, with at most 128
+distinct globally optimal target outputs per input. Four disjoint shards must
+all finish before claiming suite completion. Additional independent verification
+uses 12 inputs and up to four target optima each. No independent candidate
+review has occurred. Finite tests do not establish the universal theorem.
 
 ## Experience and next action
 
@@ -91,8 +102,10 @@ application. One new entry records the concrete failure of node-id-dependent
 ancestry checking. This restart creates 1 experience entry and updates 1; no
 entry is pending promotion or used as evidence by its mere presence.
 
-After the preparation commit, the next responsibility is Propose using the
-label-partition contract and the full prepared candidate suite. The source model
-must represent connecting-subtree disjointness and **component** ancestry. Any
-candidate must pass the whole actual-target/recovery loop, including alternate
-optimal target outputs, before independent review.
+Complete the Round 006 prepared and independent target checks, then request a
+fresh registered review of F, G, the general proof, novelty and significance.
+The current proof gives O(m^4) target vertices/arcs and O(m^4 log m) bits.
+Measured seven-leaf median vertices fell from 77,799 (Round 004) to 15,267.5
+(Round 006), on the same 16 inputs; median arcs fell from 254,150 to 60,440.
+This comparison is not a proof of optimal overhead. Exact overhead and solver
+coverage remain separate evidence obligations.

@@ -42,13 +42,16 @@ def connected_optima(target, cap=4):
             u=min(partners,key=position.get); unavailable.update((u,v)); bound+=1; packing.append(([u,v],1))
     packing.extend(([v],1) for v in set(vertices)-unavailable)
     bound+=len(set(vertices)-unavailable)
-    model.add(sum(kept.values())<=bound)
+    empty_groups=[]
+    for i,(group,limit) in enumerate(packing):
+        if limit==0:continue
+        empty=model.new_bool_var(f'empty{i}')
+        model.add(sum(kept[v] for v in group)+empty==1)
+        empty_groups.append(empty)
     solver=cp_model.CpSolver();solver.parameters.num_search_workers=1
     for size in range(bound,-1,-1):
         bounded=model.clone()
-        bounded.add(sum(kept.values())==size)
-        if size==bound:
-            for group,limit in packing:bounded.add(sum(kept[v] for v in group)==limit)
+        bounded.add(sum(empty_groups)==bound-size)
         status=solver.solve(bounded)
         if status==cp_model.OPTIMAL:
             model=bounded; break

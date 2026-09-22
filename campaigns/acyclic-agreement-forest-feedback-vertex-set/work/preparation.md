@@ -96,7 +96,20 @@ LCA, conflict and ranking implementation. No source oracle imports or reads a
 candidate. Enumeration is appropriate as a small independent cross-check;
 it is not proposed as a polynomial-time reduction.
 
-The target SMT oracle uses one deletion Boolean and one integer rank per vertex.
+For a bidirected graph, the current target oracle uses the exact equivalence
+between DFVS and vertex cover: every undirected edge is a directed two-cycle.
+It splits connected components, packs disjoint cliques from actual adjacency,
+and obtains a lower bound by summing their cover bounds. A packed loop vertex
+is forced; a loop-free clique contributes its size minus one, plus one exactly
+when fully selected. Vertices outside the packing contribute their deletion
+Booleans. Increasing exact surplus cardinalities therefore proves the first
+SAT cover globally minimum. All witnesses receive a separate DAG validity
+check. No candidate import, source optimum or threshold metadata is used.
+NetworkX 3.6.1 computes graph components and cliques; Z3 solves the constraints.
+The revised oracle passes the same 631-graph exhaustive comparison; see
+`../rounds/006/oracle-surplus.txt`.
+
+For graphs that are not bidirected, the target SMT oracle uses one deletion Boolean and one integer rank per vertex.
 Each arc u->v requires `delete(u) or delete(v) or rank(u)<rank(v)`. This is
 satisfiable exactly when the remaining digraph is acyclic. Binary search over
 cardinality with conclusive SAT/UNSAT proves the optimum, then blocking deletion

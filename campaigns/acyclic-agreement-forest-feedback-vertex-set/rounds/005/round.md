@@ -88,6 +88,11 @@ thresholds and 815 decoded minimum rank assignments. Overhead comparison on the
 same records is in `overhead.txt`: at seven leaves median vertices fell from
 77,799 to 29,220 and median arcs from 254,150 to 99,202. The rank construction
 has an O(m^4) graph-size bound instead of the slot baseline's O(m^5).
+The generated per-input `sizes.json` is excluded as reproducible bulk output:
+from the repository root at revision `9b0ef14`, with its locked environment,
+run `uv run --locked python campaigns/acyclic-agreement-forest-feedback-vertex-set/rounds/005/formula_check.py`.
+It uses the committed cases, no new sampling. The compact full diagnostic log
+is retained as `formula-check.txt`.
 
 Actual target verification completed 22 distinct prepared records in the four
 shards, with 128 minimum-target recoveries each (2,816). Earlier sequential

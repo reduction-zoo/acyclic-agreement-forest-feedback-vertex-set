@@ -15,3 +15,4 @@ lake-packages/
 # when the family appears. For each omitted artifact keep its exact input,
 # generator revision, dependency lock, working directory and command in the
 # round or `work/evidence/` directory that produced it.
+campaigns/acyclic-agreement-forest-feedback-vertex-set/rounds/005/sizes.json

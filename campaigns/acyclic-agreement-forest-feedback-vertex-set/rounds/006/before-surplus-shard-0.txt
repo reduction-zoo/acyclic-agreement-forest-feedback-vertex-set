@@ -1,0 +1,9 @@
+1/82 exhaustive_1_0_0: target_opt=0 outputs=1 all_optima=True
+2/82 exhaustive_3_0_2: target_opt=193 outputs=128 all_optima=False
+3/82 exhaustive_3_2_0: target_opt=193 outputs=128 all_optima=False
+4/82 exhaustive_4_0_1: target_opt=280 outputs=128 all_optima=False
+5/82 exhaustive_4_0_5: target_opt=287 outputs=128 all_optima=False
+6/82 exhaustive_4_0_9: target_opt=287 outputs=128 all_optima=False
+7/82 exhaustive_4_0_13: target_opt=1345 outputs=128 all_optima=False
+8/82 exhaustive_4_1_2: target_opt=285 outputs=128 all_optima=False
+9/82 exhaustive_4_1_6: target_opt=291 outputs=128 all_optima=False

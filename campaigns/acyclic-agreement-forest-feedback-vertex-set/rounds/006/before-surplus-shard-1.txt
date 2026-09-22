@@ -1,0 +1,5 @@
+1/82 exhaustive_2_0_0: target_opt=0 outputs=1 all_optima=True
+2/82 exhaustive_3_1_0: target_opt=193 outputs=128 all_optima=False
+3/82 exhaustive_3_2_1: target_opt=198 outputs=128 all_optima=False
+4/82 exhaustive_4_0_2: target_opt=280 outputs=128 all_optima=False
+5/82 exhaustive_4_0_6: target_opt=287 outputs=128 all_optima=False
