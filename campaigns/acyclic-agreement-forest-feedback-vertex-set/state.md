@@ -14,8 +14,9 @@ of the component ancestry graph. A change to internal node names in identical
 trees changes the old oracle optimum from 1 to 2. The previous claim that only
 solver capacity blocked completion is false. Old candidate/proof/verifier files
 are preserved in Git at `a056e65` and removed from current `work/`; raw evidence
-and rounds remain. The replacement candidate at `8b2e404` has a general rank-characterization proof;
-full actual-target verification is in progress, so it is not an accepted result.
+and rounds remain. The replacement candidate at `25cab27` has a general rank-characterization proof;
+the full actual-target suite now passes. Independent review and writing remain
+pending, so this is not yet ready for expert review.
 
 ## Authorization and budget
 
@@ -69,7 +70,7 @@ the Prepare audit. Later rounds use the rebuilt independent foundation.
 | 3 | Twin-group / CP-SAT target verification | Can an expanded target optimum be certified? | Execution failure; no optimum certificate, and source model now invalidated | [003](rounds/003/round.md) |
 | 4 | Canonical component-slot CNF and parallel unweighted threshold covers | Independent source thresholds followed by actual target recovery | Inconclusive: local formulas passed, full target runs interrupted | [004](rounds/004/round.md) |
 | 5 | Monotone node ranks replace component slots, reducing graph order | All 1,759 source thresholds and actual target recovery | Inconclusive: local formulas passed; only 22 prepared records completed | [005](rounds/005/round.md) |
-| 6 | Unit-gap guarded covers with feasible-forest threshold pruning | Full fixed 327-record suite, 12 independent inputs, graph-size comparison | In progress; oracle self-tests pass, complete candidate checks pending | [006](rounds/006/round.md) |
+| 6 | Unit-gap guarded covers with feasible-forest threshold pruning | Full fixed 327-record suite, 12 independent inputs, graph-size comparison | Supported by proof and all prepared/additional checks; review pending | [006](rounds/006/round.md) |
 
 ## Current preparation checks
 
@@ -89,21 +90,22 @@ the Prepare audit. Later rounds use the rebuilt independent foundation.
   [self-test](work/evidence/prepare-restart/self-test.txt),
   [old-oracle counterexample](work/evidence/prepare-restart/audit-output.txt).
 
-The current candidate is being tested on all 327 inputs, with at most 128
-distinct globally optimal target outputs per input. Four disjoint shards must
-all finish before claiming suite completion. Additional independent verification
-uses 12 inputs and up to four target optima each. No independent candidate
-review has occurred. Finite tests do not establish the universal theorem.
+The current candidate at `25cab27` passes all 327 prepared records and 38,427
+minimum-target recoveries; 300 records were capped at 128 outputs, and 27 empty
+targets were exhaustively checked. All eight process exits and their exact
+case-name union passed. Independent Verify passed 12 records and 33 recoveries.
+Both maps also pass identical-tree depth regressions at 1, 2 and 1,200 leaves.
+See [verification](work/verification.md). The general all-input/all-optimum claim
+still requires independent review; finite tests do not prove that quantifier.
 
 ## Experience and next action
 
 The existing CNF-to-DFVS entry has been corrected to retract its former MAAF
 application. One new entry records the concrete failure of node-id-dependent
-ancestry checking. This restart creates 1 experience entry and updates 1; no
-entry is pending promotion or used as evidence by its mere presence.
+ancestry checking. This restart creates 3 experience entries and updates 1. The rank and guarded-cover
+entries are awaiting independent review; presence alone is not evidence.
 
-Complete the Round 006 prepared and independent target checks, then request a
-fresh registered review of F, G, the general proof, novelty and significance.
+Request a fresh registered review of F, G, the general proof, novelty and significance.
 The current proof gives O(m^4) target vertices/arcs and O(m^4 log m) bits.
 Measured seven-leaf median vertices fell from 77,799 (Round 004) to 15,267.5
 (Round 006), on the same 16 inputs; median arcs fell from 254,150 to 60,440.

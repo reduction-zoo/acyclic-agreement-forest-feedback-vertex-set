@@ -126,3 +126,40 @@ same round, not a new construction hypothesis.
 Experience extraction in progress: `research/experience/monotone-ranks-for-acyclic-forests.md`
 and `research/experience/guarded-threshold-cover-gap.md` record the general
 arguments with independent review explicitly pending.
+
+The traversal repair is committed at `25cab27`. `deep-tree-after.txt` passes
+both maps on 1-, 2-, and 1,200-leaf identical caterpillars, with independent ids
+and reversed child/node orders. No recursion-limit adjustment or fallback is
+used. `iterative-equivalence.txt` compares the full ordered vertex/arc output
+of both revisions on every prepared record and finds all 327 unchanged. This
+comparison loaded the old module with `git show 8b2e404:campaigns/acyclic-agreement-forest-feedback-vertex-set/work/algorithm.py`
+and compared `forward(case['source'])` for every committed case; it is a
+refactoring diagnostic, not an independent oracle. Size measurements therefore
+remain exact; earlier timings do not benchmark the repaired implementation.
+
+The entire actual-target suite is rerun after the repair, now scheduled with
+`check.py --candidate .../work/algorithm.py --shard I 8` for I=0,...,7. Logs are
+`iterative-shard-I.txt`; no instance, target-output cap, or validity predicate
+changes. Additional independent Verify again passes all 12 inputs and 33
+recoveries, recorded in `iterative-verify.txt`. Complete prepared rerun pending.
+The added depth regression is a finite implementation-boundary check within
+this repair, with the explicitly known identical-tree optimum, not a larger
+source optimization search family or new mathematical mechanism.
+
+## Executable closeout
+
+Candidate and proof `25cab27` pass the complete repaired suite: all eight
+processes exited zero, all 327 prepared records were covered exactly once,
+38,427 target recoveries passed, 300 records were capped at 128 target optima,
+and all optima were enumerated on the 27 empty targets. The additional independent
+suite passed 12 inputs and 33 recoveries, and both maps passed all three depth
+regressions. No mismatch remains. Earlier and repeated recoveries are not added
+to this current-candidate count. See `coverage.txt`, `iterative-shard-*.txt`,
+`iterative-verify.txt` and `deep-tree-after.txt`.
+
+Outcome: supported by the general proof and relevant finite executable checks;
+independent review is the next obligation. New allocation used 3/20, remaining
+17; six historical rounds total, five distinct construction/literature mechanisms
+(the old Round 003 was supporting verification). Independent review is requested
+before manuscript preparation. The two newly extracted mathematical experience
+entries retain pending-review status until that assessment is available.

@@ -1,0 +1,2 @@
+PASS: all 327 explicit target graphs equal those at 8b2e404, including vertex/arc order.
+Size evidence remains identical; earlier timing measurements do not benchmark the revised implementation.
