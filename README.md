@@ -33,10 +33,15 @@ globally minimum acyclic agreement forest of the source, ties included.
 ## Status
 
 Prepare was rebuilt on 2026-09-22 after a reproducible source-definition error
-invalidated the former candidate and its checker evidence. There is currently
-no valid candidate proof. The new foundation checks 327 source inputs and 631
+invalidated the former candidate and its checker evidence. The replacement
+rank-threshold candidate has a general proof; full target verification is in
+progress and independent review is pending. The new foundation checks 327 source inputs and 631
 target digraphs against independent exhaustive references, including all minimum
 outputs in those finite families. See the [preparation report](campaigns/acyclic-agreement-forest-feedback-vertex-set/work/preparation.md).
+The current [proof](campaigns/acyclic-agreement-forest-feedback-vertex-set/work/proof.md)
+and [verification report](campaigns/acyclic-agreement-forest-feedback-vertex-set/work/verification.md)
+distinguish the universal theorem from finite evidence. The construction emits
+O(m^4) vertices/arcs for m augmented labels and uses no solver in either map.
 
 ## Layout
 

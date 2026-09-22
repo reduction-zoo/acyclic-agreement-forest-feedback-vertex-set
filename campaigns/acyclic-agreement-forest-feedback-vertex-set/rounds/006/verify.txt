@@ -1,0 +1,13 @@
+verify 1: leaves=1 vertices=0 target_opt=0 outputs=1 source_opt=1
+verify 2: leaves=2 vertices=0 target_opt=0 outputs=1 source_opt=1
+verify 3: leaves=2 vertices=0 target_opt=0 outputs=1 source_opt=1
+verify 4: leaves=3 vertices=0 target_opt=0 outputs=1 source_opt=1
+verify 5: leaves=3 vertices=352 target_opt=193 outputs=4 source_opt=2
+verify 6: leaves=3 vertices=361 target_opt=198 outputs=4 source_opt=2
+verify 7: leaves=4 vertices=0 target_opt=0 outputs=1 source_opt=1
+verify 8: leaves=4 vertices=501 target_opt=277 outputs=4 source_opt=2
+verify 9: leaves=4 vertices=2168 target_opt=1349 outputs=4 source_opt=3
+verify 10: leaves=4 vertices=528 target_opt=292 outputs=4 source_opt=2
+verify 11: leaves=5 vertices=5433 target_opt=3584 outputs=4 source_opt=2
+verify 12: leaves=5 vertices=5615 target_opt=3706 outputs=4 source_opt=3
+PASS independent instances=12 target_recoveries=33
