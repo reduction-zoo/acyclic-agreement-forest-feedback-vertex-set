@@ -3,6 +3,7 @@ name = "maaf-dfvs-research"
 version = "0.0.0"
 requires-python = ">=3.11"
 dependencies = [
+    "networkx==3.6.1",
     "ortools==9.15.6755",
     "z3-solver==4.15.4.0",
 ]

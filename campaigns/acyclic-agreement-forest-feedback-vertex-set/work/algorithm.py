@@ -100,67 +100,47 @@ class CNF:
         return -self.either([-v for v in literals])
 
 
-def formula(source):
+def formula(source, k):
     labels, trees = inputs(source)
-    m = len(labels)
+    m, width = len(labels), (k-1).bit_length()
     cnf = CNF()
-    member = {(leaf, slot): cnf.variable() for leaf in range(m) for slot in range(leaf+1)}
-    def a(leaf, slot):
-        return member.get((leaf, slot), -1)
-    for leaf in range(m):
-        row = [a(leaf, s) for s in range(leaf+1)]
-        cnf.add(*row)
-        for x,y in itertools.combinations(row, 2):
-            cnf.add(-x,-y)
-        for s in range(leaf):
-            cnf.add(-a(leaf,s), a(s,s))
-    order = {(s,t): cnf.variable() for s in range(m) for t in range(s+1,m)}
-    def before(s,t):
-        return order[s,t] if s<t else -order[t,s]
-    for s,t,u in itertools.combinations(range(m),3):
-        cnf.add(-before(s,t), -before(t,u), before(s,u))
-        cnf.add(before(s,t), before(t,u), -before(s,u))
+    ranks = [[cnf.variable() for _ in range(width)] for _ in range(m)]
+    # Bit vectors use most-significant bit first.
+    def equal(x,y):
+        return cnf.both(cnf.both([cnf.either([-a,b]),cnf.either([a,-b])])
+                        for a,b in zip(x,y))
+    def leq(x,y):
+        lower = 1
+        for a,b in reversed(list(zip(x,y))):
+            lower = cnf.either([cnf.both([-a,b]),
+                               cnf.both([cnf.either([-a,b]),lower])])
+        return lower
+    limit = [1 if (k-1) >> bit & 1 else -1 for bit in reversed(range(width))]
+    for rank in ranks:
+        cnf.add(leq(rank,limit))
+    same = {(a,b):equal(ranks[a],ranks[b]) for a,b in itertools.combinations(range(m),2)}
     for tree in trees:
-        down, outside, occupied, above = {}, {}, {}, {}
-        for v in reversed(list(tree.children)):
-            for s in range(m):
-                down[v,s] = (a(tree.leaf[v],s) if v in tree.leaf else
-                             cnf.either(down[c,s] for c in tree.children[v]))
+        values = {v:(ranks[tree.leaf[v]] if v in tree.leaf else
+                     [cnf.variable() for _ in range(width)]) for v in tree.children}
         for v in tree.children:
-            for s in range(m):
-                parent = tree.parent[v]
-                if parent is None:
-                    outside[v,s] = above[v,s] = -1
-                else:
-                    sibling = next(c for c in tree.children[parent] if c != v)
-                    outside[v,s] = cnf.either([outside[parent,s],down[sibling,s]])
-                    above[v,s] = cnf.either([above[parent,s],occupied[parent,s]])
-                if v in tree.leaf:
-                    occupied[v,s] = a(tree.leaf[v],s)
-                else:
-                    left,right = tree.children[v]
-                    hits = [down[left,s],down[right,s],outside[v,s]]
-                    occupied[v,s] = cnf.either(cnf.both(pair) for pair in itertools.combinations(hits,2))
-            for s,t in itertools.combinations(range(m),2):
-                cnf.add(-occupied[v,s],-occupied[v,t])
-            for s in range(m):
-                for t in range(m):
-                    if s != t:
-                        cnf.add(-above[v,s],-occupied[v,t],before(s,t))
-    for triple in itertools.combinations(range(m),3):
-        if trees[0].triple(triple) != trees[1].triple(triple):
-            for s in range(min(triple)+1):
-                cnf.add(*[-a(leaf,s) for leaf in triple])
-    # Exact threshold circuit: count[j] iff at least j representatives are used.
-    count = [1] + [-1]*m
-    for s in range(m):
-        count = [1] + [cnf.either([count[j],cnf.both([count[j-1],a(s,s)])])
-                       for j in range(1,m+1)]
-    return cnf, member, count
+            cnf.add(leq(values[v],limit))
+            for child in tree.children[v]:
+                cnf.add(leq(values[v],values[child]))
+        # One comparison per (ancestor, leaf) is shared across leaf pairs.
+        agreements = {}
+        for a,b in itertools.combinations(range(m),2):
+            root = tree.lca((a,b))
+            if (root,a) not in agreements:
+                agreements[root,a] = equal(values[root],ranks[a])
+            cnf.add(-same[a,b],agreements[root,a])
+    for a,b,c in itertools.combinations(range(m),3):
+        if trees[0].triple((a,b,c)) != trees[1].triple((a,b,c)):
+            cnf.add(-same[a,b],-same[a,c])
+    return cnf, ranks
 
 
-def cover_graph(cnf, threshold, prefix):
-    clauses = cnf.clauses + ([] if threshold == -1 else [(-threshold,)])
+def cover_graph(cnf, prefix):
+    clauses = cnf.clauses
     vertices, edges = [], []
     def endpoint(v, bit):
         return f'{prefix}:v:{v}:{bit}'
@@ -177,10 +157,10 @@ def cover_graph(cnf, threshold, prefix):
 
 
 def forward(source):
-    cnf, _, count = formula(source)
     vertices, arcs = [], []
-    for k in range(1,len(count)):
-        vs,edges = cover_graph(cnf, count[k+1] if k+1<len(count) else -1, str(k))
+    for k in range(1,len(source['labels'])+2):
+        cnf, _ = formula(source,k)
+        vs,edges = cover_graph(cnf,str(k))
         vertices.extend(vs)
         for u,v in edges:
             arcs.extend([[u,v],[v,u]])
@@ -217,13 +197,17 @@ def extract(source, solution):
     labels, trees = inputs(source)
     m = len(labels)
     chosen = set(solution['feedback_vertex_set'])
-    # Membership variables are allocated first in a fixed triangular order.
-    member = {(leaf,s):2+leaf*(leaf+1)//2+s for leaf in range(m) for s in range(leaf+1)}
     best = None
     for k in range(1,m+1):
-        blocks = [tuple(leaf for leaf in range(s,m)
-                        if f'{k}:v:{member[leaf,s]}:1' in chosen) for s in range(m)]
-        blocks = [b for b in blocks if b]
+        width = (k-1).bit_length()
+        groups = {}
+        for leaf in range(m):
+            rank = 0
+            for bit in range(width):
+                variable = 2 + leaf*width + bit
+                rank = 2*rank + (f'{k}:v:{variable}:1' in chosen)
+            groups.setdefault(rank,[]).append(leaf)
+        blocks = list(groups.values())
         if valid_partition(blocks,m,trees) and (best is None or len(blocks)<len(best)):
             best = blocks
     if best is None:
