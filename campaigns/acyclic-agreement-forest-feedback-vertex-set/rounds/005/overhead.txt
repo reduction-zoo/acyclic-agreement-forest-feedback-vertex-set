@@ -1,0 +1,9 @@
+leaves records baseline_vertices_median rank_vertices_median baseline_arcs_median rank_arcs_median rank_vertices_max rank_arcs_max rank_json_bytes_max rank_forward_seconds_median
+1 2 165.0 90.0 450.0 242.0 90 242 6530 0.000159
+2 2 1475.0 806.0 4396.0 2534.0 806 2534 70365 0.000853
+3 11 5075 2396 15590 7752 2403 7772 218996 0.002755
+4 231 12664 5974 39698 19818 6224 20670 592368 0.007403
+5 33 25889 11446 82522 38420 12128 40780 1180201 0.023438
+6 32 46790.5 19068.5 151156.0 64373.0 20482 69362 2034800 0.052522
+7 16 77799.0 29220.0 254150.0 99202.0 31204 106226 3147881 0.092651
+Both algorithms build the full explicit graph; timings are single runs, not a calibrated benchmark.

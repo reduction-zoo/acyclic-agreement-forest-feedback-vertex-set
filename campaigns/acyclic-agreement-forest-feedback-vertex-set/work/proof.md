@@ -4,85 +4,88 @@ Let m=|X|+1 count all labels, including the added root label. The source and
 output encodings are fixed in `contract.md`. This proof describes `algorithm.py`.
 A solver is used only by the test harness, never by F or G.
 
-## Polynomial Boolean verifier for a forest
+## Rank characterization of acyclic agreement forests
 
-Number labels 0,...,m-1 in lexicographic order. A membership variable a[l,s]
-exists for 0<=s<=l<m. Each label belongs to exactly one slot. The implication
-a[l,s] -> a[s,s] makes a nonempty slot s contain s, and no smaller label can
-belong to it. Thus slots are exactly the partition blocks, canonically named by
-their least labels; a[s,s] indicates whether slot s is used. Conversely every
-partition has exactly this membership assignment.
+Fix a threshold k in {1,...,m}. Give every augmented tree vertex an integer rank
+in {0,...,k-1}; copies of the same labelled leaf share one rank variable. Impose:
 
-For each input tree and slot, down[v,s] is the disjunction of membership over
-labels below v. Compute it bottom-up. Compute outside[v,s] top-down as the OR
-of outside[parent,s] and down[sibling,s], starting with false at the augmented
-root. These are precisely the selected labels in the different directions
-incident to a tree vertex.
+1. For every parent-child edge, rank(parent) <= rank(child).
+2. For every pair of leaves a,b in each tree, if rank(a)=rank(b), their LCA
+   has that same rank.
+3. If the two input trees disagree on a rooted triple a,b,c, its three leaf
+   ranks are not all equal.
 
-A labelled leaf v is occupied by slot s exactly when its label belongs to s.
-An internal binary vertex v is occupied exactly when at least two of its three
-incident directions contain selected labels (the direction above the augmented
-root is empty). This is precisely the condition for v to lie in the minimal
-connecting subtree of the selected labels. For one selected label only that
-leaf is occupied; for an empty slot no vertex is occupied. Require at most one
-occupied slot at every vertex in each tree. This is exactly pairwise
-vertex-disjointness of connecting subtrees. It does not require unused vertices
-to be assigned to any component.
+**Rank assignment implies a forest.** Partition labels by equal ranks. For a
+block B containing at least two leaves, some pair a,b in B has LCA equal to the
+root of its connecting subtree: take leaves in the two child branches of that
+root. Condition 2 gives this root rank r_B. Condition 1 forces every vertex on
+a root-to-B-leaf path to have rank r_B. A singleton's connecting subtree is
+just its labelled leaf. Thus every connecting subtree is monochromatic, and
+different blocks cannot intersect because they have different ranks.
 
-For every triple of labels whose induced rooted binary triples disagree between
-the input trees, forbid placing all three in one slot. A rooted binary labelled
-tree is determined by its induced rooted triples: for at least three labels,
-the rooted cluster hierarchy is recovered from its triples; restrictions to
-one or two labels are unique. Therefore these clauses are equivalent to
-agreement of every block's two restrictions. Restriction followed by restriction
-equals direct restriction, so the triples used are exactly those of each block.
+Condition 3 gives agreement of restrictions. Here is the rooted-triples fact
+used in this inference: a proper label subset C with at least two elements is
+a cluster of a rooted binary tree iff every pair x,y in C and z outside C
+induces xy|z. One direction follows from the cluster's root. Conversely, if C
+is not a cluster, its LCA has an extra descendant z outside C, while C meets
+both of its child branches. Choose x,y in those two branches; the triple is
+not xy|z, a contradiction. Hence triples determine the cluster hierarchy and
+therefore the rooted labelled tree. Restrictions to one or two labels are
+unique. Restricting to a block preserves its constituent triples.
 
-## Encoding the component ancestry graph
+If a component root B is an ancestor of a distinct component root C in either
+tree, Condition 1 gives r_B <= r_C, and distinct blocks have unequal ranks.
+Every component ancestry arc thus strictly increases rank. Its union is
+acyclic. The number of blocks is at most k.
 
-Boolean comparisons orient every pair of slots into a tournament. For each
-triple, forbid the two cyclic orientations. A tournament without a directed
-triangle is transitive (a shortest directed cycle of length at least four has
-a chord producing a shorter directed cycle). Thus the comparisons describe a
-strict total order, including unused slots.
+**Forest implies a rank assignment.** Take any acyclic agreement forest with
+q<=k blocks, and number its blocks 0,...,q-1 in a topological order of their
+union ancestry graph. Give a leaf its block's number. For every tree vertex v,
+define its rank to be the minimum rank among its descendant labelled leaves.
+This is nondecreasing from parent to child and lies in {0,...,k-1}.
 
-For each tree, let above[v,s] be true exactly when some **strict ancestor** of v
-is occupied by slot s. Compute it top-down by
-above[child,s] = above[parent,s] OR occupied[parent,s]. For distinct s,t require
-above[v,s] AND occupied[v,t] -> s<t in the slot order.
+If v belongs to the connecting subtree of block B, some leaf of B is below v.
+Any leaf c below v from a different block C must have its component root below
+the root of B: both roots are ancestors of c; if the root of C were at or
+above B's root, the connecting path to c would intersect B at v. Disjointness
+excludes this. Hence r_C>r_B, and the minimum descendant rank at v is exactly
+r_B. The entire connecting subtree of B therefore has rank r_B. Equal-rank
+leaves belong to B and their LCA belongs to its connecting subtree, establishing
+Condition 2. Agreement of each block's restrictions establishes Condition 3.
 
-These constraints express exactly the union of component ancestry relations.
-If the root of connecting subtree s is above the root of subtree t, the clause
-at the latter root enforces s<t. Conversely, suppose an occupied vertex u of s
-is a strict ancestor of an occupied vertex v of t. The two subtree roots are
-both ancestors of v, so they are comparable. If the root of t were an ancestor
-of the root of s, the path inside connecting subtree t from its root to v would
-contain u (or the root of s), intersecting s. Disjointness rules this out.
-Hence the root of s is a strict ancestor of the root of t. Every imposed
-comparison is therefore an actual component ancestry arc. A finite graph is
-acyclic exactly when it admits a strict total order extending its arcs. Any
-order of used slots extends to all slots. This proves both directions, without
-identifying internal vertices of the two input trees.
+This proves the equivalence for every k, using the component ancestry graph,
+with no identification of internal vertices across the two trees.
 
-All gate outputs are introduced by exact Tseitin equivalences, not merely
-one-way implications. The OR gate is encoded by input -> output for each input
-and output -> OR(inputs); AND is obtained by negation. Literal 1 is fixed true.
-Constant simplifications preserve the exact Boolean function. An empty clause
-is represented as the false unit (-1), which is inconsistent with literal 1.
+## Polynomial CNF implementing ranks
 
-## Component thresholds
+Use w=ceil(log_2 k) bits per rank, most significant bit first (w=0 when k=1).
+Leaf rank bits are allocated first and shared by both trees. Other vertex ranks
+use fresh bit variables. Bound each leaf rank by k-1. Internal ranks need no
+separate bound: every vertex has a descendant leaf, and the parent inequalities
+already bound it above by that leaf's rank. Bit vectors are nonnegative.
 
-A sequential Boolean counter has c[i,j] true iff at least j of the first i
-representative variables a[s,s] are true:
+The implementation encodes a<=b by comparing bits from least significant to
+most significant. Starting with tail=true, replace tail by
+majority(NOT a_bit, b_bit, tail). Equal current bits preserve the lower-bit
+comparison; a current 0/1 makes it true, and 1/0 makes it false. This proves the
+comparator by induction. The majority gate has the six usual clauses: every
+true input pair forces its output, and a true output requires one true input
+in each pair. Bit equality uses its four truth-table clauses; vector equality
+is an AND of bit equalities. OR gates use both implication directions; AND is
+the dual. Constant and repeated-literal simplifications are exact identities.
+Literal 1 is fixed true. Empty clauses are represented by the false unit -1.
 
-c[i,j] = c[i-1,j] OR (c[i-1,j-1] AND a[i-1,i-1]),
+For every original tree edge assert its comparison. For each leaf pair with
+equality flag E_ab, assert E_ab -> (rank(a)<=rank(LCA(a,b))). The reverse
+inequality already follows from the tree edges, so this is Condition 2 exactly.
+Shared (LCA,leaf) comparisons are emitted once within each tree. For a disagreeing
+triple assert NOT E_ab OR NOT E_ac. All gates are equivalences; no implicit
+existential extension can falsify the asserted comparisons. Call the resulting
+formula Phi_k. The characterization proves:
 
-with c[i,0]=true and c[0,j]=false for j>0. Its correctness follows by induction.
-For k=1,...,m, append NOT c[m,k+1], omitting this clause at k=m. Call the result
-Phi_k. The preceding equivalences prove:
-
-Phi_k is satisfiable iff the source has an acyclic agreement forest with at most
-k components. Every satisfying assignment supplies such a forest; every such
-forest extends to a satisfying assignment. In particular Phi_m is satisfiable.
+Phi_k is satisfiable iff the input admits an acyclic agreement forest with at
+most k components. Every satisfying assignment decodes to one, and every such
+forest extends to a satisfying assignment. Phi_m is always satisfiable.
 
 ## A CNF formula becomes a bidirected cover graph
 
@@ -114,17 +117,18 @@ strictly improves the whole. This statement includes all tied optima.
 
 ## Recovery from an arbitrary minimum DFVS
 
-G reconstructs the membership variable numbering from the source labels. In each
-threshold graph it reads the selected true endpoints for membership variables
-and obtains a proposed partition. Some unsatisfiable threshold graphs may
-produce malformed proposals. G validates each proposal directly: label partition,
+G reconstructs the leaf-rank bit numbering for each threshold k from the
+source label list and w=(k-1).bit_length(). It reads whether each corresponding
+true endpoint belongs to the target deletion set and partitions labels by the
+resulting bit values. It does not need to trust proposals from unsatisfiable
+thresholds. Each proposal passes a direct polynomial check of label coverage,
 agreement of restrictions, connecting-subtree disjointness, and acyclicity of
-the component ancestry graph. It returns a valid proposal with the fewest blocks,
-with threshold order breaking ties deterministically.
+the component ancestry graph. G returns the accepted proposal with the fewest
+blocks; increasing threshold order breaks ties deterministically.
 
 Let OPT be the minimum possible source component count. Phi_OPT is satisfiable,
 so the restriction of **any** minimum target DFVS to that threshold graph
-produces a satisfying membership assignment, hence a valid partition with at
+produces a satisfying rank assignment, hence a valid partition with at
 most OPT components. By definition it has exactly OPT components. Thus at least
 one proposal is valid, all accepted proposals have at least OPT components,
 and the chosen one has exactly OPT. Proposals from unsatisfiable thresholds
@@ -134,35 +138,36 @@ minimum target output, not only outputs built from source solutions.
 
 ## Worst-case time and encoding length
 
-All augmented trees have O(m) vertices. There are O(m^2) membership, comparison
-and gate variables; the sequential counter also has O(m^2) gates. Membership
-uniqueness, disjointness, ancestry comparisons and order transitivity generate
-O(m^3) clauses. Rooted triple disagreement generates at most O(m^4) clauses.
-Every clause has length at most m, and only O(m) uniqueness clauses have that
-length; all remaining clauses have constant length (gate fan-in is at most 3).
-Total literal occurrences and total squared clause lengths are O(m^4).
+All augmented trees have O(m) vertices. At threshold k, there are O(m log m)
+rank bits, O(m^2 log m) equality/comparison gates, and O(m^3) disagreeing-triple
+clauses. Clause width is at most max(4,ceil(log_2 m)+1): the only unbounded
+fan-in gate conjoins bit equalities. Total literal count is
+O(m^3+m^2 log m), and total squared clause width is
+O(m^3+m^2 log^2 m). Thus one cover graph has that order of vertices/edges, and
+the m-threshold union has O(m^4+m^3 log^2 m)=O(m^4) vertices and arcs (for
+asymptotically large m, log^2 m=O(m)). Vertex indices require O(log m) bits,
+giving O(m^4 log m) target encoding length. No numeric weight is expanded.
 
-Each threshold graph consequently has O(m^4) vertices and edges, and their union
-has O(m^5) vertices and arcs. Identifier indices require O(log m) bits, giving
-O(m^5 log m) graph encoding length. Input label and identifier strings require
-polynomial preprocessing in |x|; no bound assumes unit-cost arbitrary-length
-strings. Tree paths and triples can be calculated by direct polynomial scans;
-a conservative O(poly(|x|)+m^6) elementary-operation bound covers this code's
-lists, sets, sorting, gate emission and graph construction. F is deterministic.
+The code's direct tree paths and triple calculations use at most polynomial
+extra work: precomputing pair LCAs with scans is O(m^3) per threshold; testing
+O(m^3) triples with O(m)-length path scans is O(m^4) per threshold. A conservative
+O(m^5 polylog(m)) bound covers graph construction excluding input-string costs.
+Lexicographic sorting and parsing of arbitrary-length input labels and node ids
+adds polynomial work in |x|; bit lengths are never assumed unit-cost.
 
-G scans the target output, reconstructs only O(m^2) primary variable indices,
-and validates m proposed partitions on two O(m)-vertex trees. Direct root/path
-and closure computations and all string operations take polynomial time in
-|x|+|y|, conservatively O(poly(|x|+|y|)+m^5). It does not reconstruct the entire
-graph, solve an optimization problem, or enumerate label subsets or partitions.
-It emits at most m blocks and each label exactly once. Thus F and G satisfy the
-required deterministic polynomial worst-case time and output-bit-length bounds.
+G scans y into a set, reconstructs only O(m log m) rank indices per threshold,
+and checks m proposed partitions on O(m)-vertex trees. Root/path scans, rooted
+restriction comparisons and ancestry DAG checks are polynomial; O(m^5) is a
+conservative combinatorial bound, plus polynomial string work in |x|+|y|.
+G neither reconstructs the target graph nor calls an optimization oracle. The
+output contains each label once. Both maps are deterministic and polynomial in
+the required input bit lengths.
 
 ## Status and provenance
 
 This is a candidate proof awaiting independent review. Local formula diagnostics
 are not actual-target checks. Full prepared verification is recorded in Round
-004. The graph conversion uses classical SAT/vertex-cover and bidirection
+005. The graph conversion uses classical SAT/vertex-cover and bidirection
 constructions; no new complexity classification is claimed. The claimed
 contribution is an explicit, checked instance map and all-optima decoder for the
 fixed optimization endpoints. The earlier withdrawn source model is not used.

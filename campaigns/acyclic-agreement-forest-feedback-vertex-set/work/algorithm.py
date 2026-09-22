@@ -99,6 +99,30 @@ class CNF:
     def both(self, literals):
         return -self.either([-v for v in literals])
 
+    def equivalent(self, a, b):
+        if a == b: return 1
+        if a == -b: return -1
+        if abs(a) == 1: return b if a == 1 else -b
+        if abs(b) == 1: return a if b == 1 else -a
+        q = self.variable()
+        self.add(-a,-b,q); self.add(a,b,q)
+        self.add(-a,b,-q); self.add(a,-b,-q)
+        return q
+
+    def majority(self, values):
+        a,b,c = values
+        if a == b or a == c: return a
+        if b == c: return b
+        if a == -b: return c
+        if a == -c: return b
+        if b == -c: return a
+        if 1 in values: return self.either(x for x in values if x != 1)
+        if -1 in values: return self.both(x for x in values if x != -1)
+        q = self.variable()
+        for x,y in itertools.combinations(values,2):
+            self.add(-x,-y,q); self.add(x,y,-q)
+        return q
+
 
 def formula(source, k):
     labels, trees = inputs(source)
@@ -107,13 +131,11 @@ def formula(source, k):
     ranks = [[cnf.variable() for _ in range(width)] for _ in range(m)]
     # Bit vectors use most-significant bit first.
     def equal(x,y):
-        return cnf.both(cnf.both([cnf.either([-a,b]),cnf.either([a,-b])])
-                        for a,b in zip(x,y))
+        return cnf.both(cnf.equivalent(a,b) for a,b in zip(x,y))
     def leq(x,y):
         lower = 1
         for a,b in reversed(list(zip(x,y))):
-            lower = cnf.either([cnf.both([-a,b]),
-                               cnf.both([cnf.either([-a,b]),lower])])
+            lower = cnf.majority([-a,b,lower])
         return lower
     limit = [1 if (k-1) >> bit & 1 else -1 for bit in reversed(range(width))]
     for rank in ranks:
@@ -123,7 +145,6 @@ def formula(source, k):
         values = {v:(ranks[tree.leaf[v]] if v in tree.leaf else
                      [cnf.variable() for _ in range(width)]) for v in tree.children}
         for v in tree.children:
-            cnf.add(leq(values[v],limit))
             for child in tree.children[v]:
                 cnf.add(leq(values[v],values[child]))
         # One comparison per (ancestor, leaf) is shared across leaf pairs.
@@ -131,7 +152,7 @@ def formula(source, k):
         for a,b in itertools.combinations(range(m),2):
             root = tree.lca((a,b))
             if (root,a) not in agreements:
-                agreements[root,a] = equal(values[root],ranks[a])
+                agreements[root,a] = leq(ranks[a],values[root])
             cnf.add(-same[a,b],agreements[root,a])
     for a,b,c in itertools.combinations(range(m),3):
         if trees[0].triple((a,b,c)) != trees[1].triple((a,b,c)):

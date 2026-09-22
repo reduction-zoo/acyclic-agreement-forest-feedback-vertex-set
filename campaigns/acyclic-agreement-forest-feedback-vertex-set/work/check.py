@@ -1,5 +1,6 @@
 """Definition-based exact oracles; no imports from candidate implementations."""
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import itertools
 import json
 from pathlib import Path
@@ -228,46 +229,57 @@ def valid_dfvs(vertices, arcs, chosen):
 
 
 def solve_bidirected(vertices, arcs, cap):
-    """Independent minimum vertex-cover model for a bidirected input graph.
-
-    Every edge is a directed 2-cycle, so hitting these edges is necessary and
-    sufficient. No graph naming convention or candidate metadata is read.
-    """
-    from ortools.sat.python import cp_model
-    model = cp_model.CpModel()
-    chosen = {v: model.new_bool_var(f'x{i}') for i,v in enumerate(vertices)}
-    for u,v in arcs:
-        if u <= v:
-            model.add_bool_or([chosen[u], chosen[v]])
-    total = sum(chosen.values())
-    model.minimize(total)
-    solver = cp_model.CpSolver()
-    solver.parameters.num_search_workers = 1
-    result = solver.solve(model)
-    if result != cp_model.OPTIMAL:
-        raise RuntimeError('CP-SAT did not certify global optimality: '+solver.status_name(result))
-    optimum = sum(solver.value(x) for x in chosen.values())
-    model.clear_objective()
-    model.add(total == optimum)
-    class Outputs(cp_model.CpSolverSolutionCallback):
-        def __init__(self):
-            super().__init__()
-            self.outputs = set()
-        def on_solution_callback(self):
-            output = tuple(sorted(v for v,x in chosen.items() if self.value(x)))
-            if not valid_dfvs(vertices, arcs, list(output)) or len(output) != optimum:
-                raise AssertionError('invalid CP-SAT witness')
-            self.outputs.add(output)
-            if len(self.outputs) > cap:
-                self.stop_search()
-    callback = Outputs()
-    solver.parameters.enumerate_all_solutions = True
-    result = solver.solve(model, callback)
-    if result not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
-        raise RuntimeError('CP-SAT witness enumeration failed: '+solver.status_name(result))
-    outputs = callback.outputs
-    complete = len(outputs) <= cap and result == cp_model.OPTIMAL
-    return optimum, set(sorted(outputs)[:cap]), complete
+    """Exact SAT vertex cover with a graph-derived clique-packing certificate."""
+    import networkx as nx
+    graph = nx.Graph()
+    graph.add_nodes_from(vertices)
+    graph.add_edges_from(arcs)
+    loops = {v for v in vertices if (v,v) in arcs}
+    graph.remove_nodes_from(loops)
+    groups = [(tuple([v]),1) for v in loops]
+    used = set(loops)
+    for clique in nx.find_cliques(graph):
+        if len(clique)>=3 and not used.intersection(clique):
+            groups.append((tuple(clique),len(clique)-1)); used.update(clique)
+    position = {v:i for i,v in enumerate(vertices)}
+    for v in vertices:
+        if v in used: continue
+        neighbors = [u for u in graph[v] if u not in used]
+        if neighbors:
+            u = min(neighbors,key=position.get)
+            used.update((u,v)); groups.append(((u,v),1))
+    lower = sum(bound for _,bound in groups)
+    chosen = {v:z3.Bool(f'd{i}') for i,v in enumerate(vertices)}
+    solver = z3.Solver()
+    solver.add([z3.Or(chosen[u],chosen[v]) for u,v in arcs if u<=v])
+    for group,bound in groups:
+        solver.add(z3.PbGe([(chosen[v],1) for v in group],bound))
+    terms = [(chosen[v],1) for v in vertices]
+    for optimum in range(lower,len(vertices)+1):
+        solver.push()
+        solver.add(z3.PbEq(terms,optimum))
+        if optimum == lower:
+            # Tight sum of disjoint valid lower bounds forces each bound tight.
+            for group,bound in groups:
+                solver.add(z3.PbEq([(chosen[v],1) for v in group],bound))
+            solver.add([z3.Not(chosen[v]) for v in vertices if v not in used])
+        result = solver.check()
+        if result == z3.sat: break
+        if result != z3.unsat: raise RuntimeError('target optimum unknown')
+        solver.pop()
+    else:
+        raise AssertionError('deleting all vertices must work')
+    outputs = set()
+    while result == z3.sat and len(outputs)<cap:
+        model = solver.model()
+        output = tuple(sorted(v for v in vertices if z3.is_true(model.eval(chosen[v]))))
+        if len(output)!=optimum or not valid_dfvs(vertices,arcs,list(output)):
+            raise AssertionError('invalid target witness')
+        outputs.add(output)
+        solver.add(z3.Or([z3.Not(chosen[v]) for v in output]))
+        result = solver.check()
+    if result == z3.unknown: raise RuntimeError('target enumeration unknown')
+    return optimum, outputs, result==z3.unsat
 
 
 def solve_target(target, cap=TARGET_OUTPUT_CAP):
@@ -275,7 +287,23 @@ def solve_target(target, cap=TARGET_OUTPUT_CAP):
     if not vertices:
         return 0, {()}, True
     if all((v,u) in arcs for u,v in arcs):
-        return solve_bidirected(vertices, arcs, cap)
+        import networkx as nx
+        graph = nx.Graph()
+        graph.add_nodes_from(vertices); graph.add_edges_from(arcs)
+        components = sorted(nx.connected_components(graph),key=lambda c:(-len(c),min(c)))
+        if len(components)==1:
+            return solve_bidirected(vertices,arcs,cap)
+        objective, outputs, complete = 0, {()}, True
+        for component in components:
+            local_vertices = [v for v in vertices if v in component]
+            local_arcs = {(u,v) for u,v in arcs if u in component}
+            needed = (cap+len(outputs)-1)//len(outputs)
+            value, witnesses, exhausted = solve_bidirected(local_vertices,local_arcs,needed)
+            objective += value
+            product = {tuple(sorted(a+b)) for a in outputs for b in witnesses}
+            complete = complete and exhausted and len(product)<=cap
+            outputs = set(sorted(product)[:cap])
+        return objective, outputs, complete
     deleted = {v: z3.Bool(f'd{i}') for i, v in enumerate(vertices)}
     ranks = {v: z3.Int(f'p{i}') for i, v in enumerate(vertices)}
     solver = z3.Solver()
@@ -335,9 +363,12 @@ def check_candidate(path, cases, evidence_dir):
         target_opt, witnesses, complete = solve_target(target)
         if not witnesses:
             raise AssertionError('missing minimum target output')
-        for chosen in witnesses:
-            recovered = run_map(path, {'source': source, 'target_solution': {
+        def recover(chosen):
+            return chosen, run_map(path, {'source': source, 'target_solution': {
                 'problem': 'dfvs', 'feedback_vertex_set': list(chosen)}}, True)
+        with ThreadPoolExecutor(max_workers=8) as pool:
+            recovered_outputs = list(pool.map(recover, sorted(witnesses)))
+        for chosen, recovered in recovered_outputs:
             if not validate_source_output(source, recovered, optimum):
                 evidence = evidence_dir / 'recovery-failure.json'
                 evidence.write_text(json.dumps(dict(source=source, target=target,

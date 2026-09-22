@@ -50,3 +50,25 @@ interruptions, not target oracle results. No prepared input or output coverage
 is removed. The refinement uses direct equivalence/majority gates and removes
 redundant internal-rank domain clauses (leaf bounds and monotone paths imply
 those bounds). It is the same rank characterization, not a new mechanism.
+
+Oracle repair: the bidirected graph solver now derives a valid lower bound by
+packing vertex-disjoint cliques and edges directly in the actual target graph.
+At that bound every group must be tight and every uncovered vertex omitted;
+these logical consequences are added explicitly for enumeration. Below-bound
+impossibility follows from the graph certificate; higher bounds are rejected
+only by exact SAT UNSAT. Neither vertex-name conventions nor source values are
+used. The CP-SAT candidate loop stopped after one source record and 128 recovered
+target optima; it is an interrupted run, not a completed suite. A native Z3
+Boolean/PB encoding replaces its search, with the same graph predicate and
+128-output cap. No source expectations or target-output requirements changed.
+
+Further exact oracle decomposition: solve weak connected components separately
+and take products of their minimum outputs. Minimum DFVS/cardinality is additive
+on these components. The cap stays 128; each component has an independently
+proved optimum and distinct output enumeration. This removes search coupling
+between disconnected thresholds without changing the target predicate. The
+prior Z3 run completed three source records (384 recoveries) before replacement;
+the prior additional CP-SAT run completed one (4 recoveries). Both incomplete
+runs remain as interruption evidence. The final runs use separate new log paths.
+Recovery subprocesses are independent and can execute eight at a time; solver
+calls and source validation remain in the main process.
