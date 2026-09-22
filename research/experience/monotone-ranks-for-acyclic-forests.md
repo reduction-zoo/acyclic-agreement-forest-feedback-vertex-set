@@ -25,7 +25,9 @@ partition constraints without a separate proof.
 ## Evidence and status
 
 General proof and binary CNF are in [work/proof.md](../../campaigns/acyclic-agreement-forest-feedback-vertex-set/work/proof.md)
-and `algorithm.py`, first implemented in Round 005. Independent review pending.
+and `algorithm.py`, first implemented in Round 005. Independent advance review completed; see the
+[review](../../campaigns/acyclic-agreement-forest-feedback-vertex-set/reviews/rank-threshold/review.md)
+and [focused follow-up](../../campaigns/acyclic-agreement-forest-feedback-vertex-set/reviews/rank-threshold/follow-up.md).
 The [formula diagnostic](../../campaigns/acyclic-agreement-forest-feedback-vertex-set/rounds/005/formula-check.txt)
 checks 1,759 thresholds on 327 inputs and 815 decoded minimum rank assignments.
 This is source/formula evidence, not a substitute for actual-target verification.
@@ -42,4 +44,11 @@ condition and edge monotonicity are both essential.
 
 - 2026-09-22: extracted during [Round 006](../../campaigns/acyclic-agreement-forest-feedback-vertex-set/rounds/006/round.md)
   from the unchanged rank mechanism of Round 005. Its measured graph-size
-  reduction is recorded there; full current target checks and review are pending.
+  reduction is recorded there; full current target checks and review were pending at extraction.
+
+- 2026-09-22 closeout: the current complete rule passes all 327 prepared inputs
+  and 38,427 target recoveries, plus 12 additional inputs and 33 recoveries.
+  Independent review supports the general argument and contributes 47 targeted
+  recovery checks. The inspected manuscript retains finite-coverage and
+  novelty/overhead qualifications. Earlier pending labels describe the extraction
+  stage; the current review status is advance for rule completion.

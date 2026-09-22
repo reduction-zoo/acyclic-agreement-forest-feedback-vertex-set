@@ -1,6 +1,7 @@
 # Verification of the rank-threshold reduction
 
-Candidate: `algorithm.py` and `proof.md` at commit `25cab27`.
+Candidate: `algorithm.py` at commit `25cab27`; proof accounting correction
+at `5f3a30b`, confirmed by independent focused review.
 Current independent checker implementation: `84f67a9`.
 The source and target endpoints are exact optimization problems; both output
 sets are nonempty. No source or target oracle imports the candidate.
@@ -67,10 +68,11 @@ up to four target optima per input; empty targets have just one. See
 ## Reproduction
 
 From the repository root, using Python 3.12.11, uv 0.12.7, Z3 4.15.4.0,
-OR-Tools 9.15.6755 and NetworkX 3.6.1, as locked in `uv.lock`:
+OR-Tools 9.15.6755 and NetworkX 3.6.1. The latter three dependencies are
+pinned in `uv.lock`; the sync command selects the tested Python explicitly:
 
 ```sh
-uv sync --locked
+uv sync --locked --python 3.12.11
 uv run --locked python campaigns/acyclic-agreement-forest-feedback-vertex-set/work/check.py --self-test
 uv run --locked python campaigns/acyclic-agreement-forest-feedback-vertex-set/work/check.py --candidate campaigns/acyclic-agreement-forest-feedback-vertex-set/work/algorithm.py
 uv run --locked python campaigns/acyclic-agreement-forest-feedback-vertex-set/work/verify.py --candidate campaigns/acyclic-agreement-forest-feedback-vertex-set/work/algorithm.py
@@ -95,4 +97,6 @@ of the earlier recursive implementation. `iterative-equivalence.txt` confirms
 that all 327 explicit target graphs remain identical after the traversal repair;
 the graph-size measurements apply unchanged, but those timings do not benchmark
 the current implementation.
-Independent review is pending.
+Independent review advances the result; see `../reviews/rank-threshold/review.md`
+and `follow-up.md`. The reviewer performed 47 further recovery calls with
+complete selected-rank-projection coverage, not full target-set enumeration.

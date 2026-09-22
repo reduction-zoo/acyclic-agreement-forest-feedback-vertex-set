@@ -27,7 +27,9 @@ can grow because every guarded clause gains one vertex and its incident edges.
 ## Evidence and status
 
 General argument in the current [proof](../../campaigns/acyclic-agreement-forest-feedback-vertex-set/work/proof.md),
-sections on guarded formulas and recovery. Independent review pending. Candidate
+sections on guarded formulas and recovery. Independent advance review completed; see the
+[review](../../campaigns/acyclic-agreement-forest-feedback-vertex-set/reviews/rank-threshold/review.md)
+and [focused follow-up](../../campaigns/acyclic-agreement-forest-feedback-vertex-set/reviews/rank-threshold/follow-up.md). Candidate
 map revision: `8b2e404`. The finite [gadget diagnostic](../../campaigns/acyclic-agreement-forest-feedback-vertex-set/rounds/006/gadget_check.py)
 checks the actual graph on all 256 subsets of the eight nonempty two-variable
 clauses, against exhaustive assignments and an independent exact graph solver.
@@ -44,5 +46,12 @@ this is an equivalent solver encoding, not a source-informed oracle shortcut.
 ## Use history
 
 - 2026-09-22: extracted during [Round 006](../../campaigns/acyclic-agreement-forest-feedback-vertex-set/rounds/006/round.md).
-  Full candidate verification and review remain in progress; no completed-rule
+  At extraction, full candidate verification and review were in progress; no completed-rule
   success is inferred from the local gadget check.
+
+- 2026-09-22 closeout: the current complete rule passes all 327 prepared inputs
+  and 38,427 target recoveries, plus 12 additional inputs and 33 recoveries.
+  Independent review supports the general argument and contributes 47 targeted
+  recovery checks. The inspected manuscript retains finite-coverage and
+  novelty/overhead qualifications. Earlier pending labels describe the extraction
+  stage; the current review status is advance for rule completion.

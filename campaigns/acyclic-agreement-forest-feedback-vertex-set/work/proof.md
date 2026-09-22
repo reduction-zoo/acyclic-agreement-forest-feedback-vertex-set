@@ -216,9 +216,11 @@ on a fixed interpreter recursion limit.
 
 ## Status and provenance
 
-This is a candidate proof awaiting independent review. Local formula diagnostics
-are not actual-target checks. Full prepared verification is recorded in Round
-006. The graph conversion uses classical SAT/vertex-cover and bidirection
+This proof received an independent advance review and a focused follow-up in
+`../reviews/rank-threshold/`. The local LCA accounting correction is resolved.
+Local formula diagnostics are not actual-target checks. Full prepared verification
+is recorded in Round 006. This is eligible for human expert review, not a formal
+proof certificate. The graph conversion uses classical SAT/vertex-cover and bidirection
 constructions; no new complexity classification is claimed. The claimed
 contribution is an explicit, checked instance map and all-optima decoder for the
 fixed optimization endpoints. The earlier withdrawn source model is not used.

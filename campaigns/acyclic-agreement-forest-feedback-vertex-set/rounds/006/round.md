@@ -163,3 +163,35 @@ independent review is the next obligation. New allocation used 3/20, remaining
 (the old Round 003 was supporting verification). Independent review is requested
 before manuscript preparation. The two newly extracted mathematical experience
 entries retain pending-review status until that assessment is available.
+
+## Independent review and final delivery
+
+The registered fresh `research-reviewer` child (thread
+`01a0c76e-db29-7853-9eae-5633601b50eb`) returned ADVANCE for the fixed
+rule-completion target. Its independent targeted checks made 47 recovery calls,
+including all optimal-threshold rank projections on two inputs and all 32
+binary patterns at the quartet's infeasible threshold. The review gives separate
+correctness, novelty and significance judgments and records instruction-based
+isolation without an enforced filesystem sandbox. See `../../reviews/rank-threshold/review.md`
+(relative review artifacts are under the campaign's `reviews/` directory).
+
+Its sole nonblocking finding was local LCA cost accounting. Commit `5f3a30b`
+corrects pair-LCA cost to O(m^2), all pair queries to O(m^4) and all triple
+queries to O(m^5) per threshold. The existing total O(m^6 polylog m) bound is
+unchanged. The focused follow-up confirms the correction and retains ADVANCE;
+no new mathematical strategy or round was required, and the maps did not change.
+
+The native Typst paper and exact vector figures are complete. Eight rendered
+pages were inspected; final notation/layout repairs were recompiled and affected
+pages reinspected. Evidence is `../../work/evidence/manuscript/inspection.md`.
+The candidate, proof, passing checks, review and paper agree: campaign status
+is ready_for_expert_review. This does not claim human certification, Lean
+formalization, optimal overhead, or novelty of polynomial-reduction existence.
+
+Experience extraction completed: two entries from this round, monotone-ranks
+and guarded-threshold-cover-gap, now link the advance review and final checks.
+Including Prepare, the restart created three entries and updated one; no
+extraction remains pending. Budget closeout: three of twenty newly authorized
+rounds completed, seventeen unused; six historical charged rounds and five
+distinct construction/literature mechanisms. Discovery stops on completed
+scope rather than exhausted budget. No publication or production integration.

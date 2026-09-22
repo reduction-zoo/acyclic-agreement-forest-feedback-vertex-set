@@ -16,3 +16,6 @@ lake-packages/
 # generator revision, dependency lock, working directory and command in the
 # round or `work/evidence/` directory that produced it.
 campaigns/acyclic-agreement-forest-feedback-vertex-set/rounds/005/sizes.json
+campaigns/acyclic-agreement-forest-feedback-vertex-set/reviews/rank-threshold/sat-paper.pdf
+campaigns/acyclic-agreement-forest-feedback-vertex-set/reviews/rank-threshold/sat-paper.txt
+campaigns/acyclic-agreement-forest-feedback-vertex-set/work/evidence/manuscript/rendered/

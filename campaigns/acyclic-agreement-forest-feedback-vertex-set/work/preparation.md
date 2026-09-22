@@ -123,7 +123,7 @@ an exception, never exhaustion or an optimum. Integer arithmetic is exact.
 From repository root:
 
 ```sh
-uv sync --locked
+uv sync --locked --python 3.12.11
 uv run --locked python campaigns/acyclic-agreement-forest-feedback-vertex-set/work/prepare.py --generate
 uv run --locked python campaigns/acyclic-agreement-forest-feedback-vertex-set/work/check.py --self-test
 uv run --locked python campaigns/acyclic-agreement-forest-feedback-vertex-set/work/evidence/prepare-restart/reproduce_old.py
