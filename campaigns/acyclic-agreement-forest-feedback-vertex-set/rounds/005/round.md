@@ -80,3 +80,32 @@ congruent to INDEX modulo 4, without changing target output cap or any predicate
 All four exit statuses and their union of case names must be checked before
 claiming suite completion. This is scheduling, not a smaller search family or
 a new construction round. No wall-clock limit is introduced.
+
+## Closeout
+
+Rank characterization and refined CNF passed all 327 source records, all 1,759
+thresholds and 815 decoded minimum rank assignments. Overhead comparison on the
+same records is in `overhead.txt`: at seven leaves median vertices fell from
+77,799 to 29,220 and median arcs from 254,150 to 99,202. The rank construction
+has an O(m^4) graph-size bound instead of the slot baseline's O(m^5).
+
+Actual target verification completed 22 distinct prepared records in the four
+shards, with 128 minimum-target recoveries each (2,816). Earlier sequential
+prefixes are duplicates and are not added. Additional independent CP-SAT checks
+completed 6 inputs and 24 recoveries. No mismatch was found; the full families
+remain incomplete. These runs are stopped before the construction changes and
+are recorded as execution interruptions, not oracle answers on remaining inputs.
+
+Diagnosis: the ordinary CNF cover gadget has no fixed gap above its cover lower
+bound on an unsatisfiable formula. Optimizing those unsatisfiable threshold
+components is irrelevant to the decoder but still required by the target
+contract. A new selector-guard construction can force every threshold optimum
+to be exactly L or L+1. This is a different composition strategy and starts
+Round 006. It will also remove the identical-tree and known-unneeded thresholds.
+
+Outcome: inconclusive executable verification; candidate rank theorem supported
+by a general proof and finite source checks, not independently reviewed.
+Experience extraction: the rank lemma is retained as a candidate proof, not
+promoted as an established reusable result until review. No new experience file.
+New allocation used 2/20, remaining 18; total historical rounds 5, distinct
+mechanisms 4 (including the original literature audit).

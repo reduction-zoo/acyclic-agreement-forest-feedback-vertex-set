@@ -1,0 +1,6 @@
+verify 1: leaves=1 vertices=90 target_opt=47 outputs=4 source_opt=1
+verify 2: leaves=2 vertices=806 target_opt=469 outputs=4 source_opt=1
+verify 3: leaves=2 vertices=806 target_opt=469 outputs=4 source_opt=1
+verify 4: leaves=3 vertices=2396 target_opt=1424 outputs=4 source_opt=1
+verify 5: leaves=3 vertices=2336 target_opt=1387 outputs=4 source_opt=2
+verify 6: leaves=3 vertices=2403 target_opt=1428 outputs=4 source_opt=2
