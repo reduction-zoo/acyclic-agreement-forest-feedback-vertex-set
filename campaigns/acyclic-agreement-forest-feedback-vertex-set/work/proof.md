@@ -203,6 +203,15 @@ G neither reconstructs the target graph nor calls an optimization oracle. The
 output contains each label once. Both maps are deterministic and polynomial in
 the required input bit lengths.
 
+Tree traversal is iterative. To compare restrictions, process retained vertices
+from descendants to ancestors: encode a leaf of index i as `Li;`, suppress a
+one-child vertex, and encode a binary vertex by parentheses enclosing its two
+lexicographically sorted child strings. Delimited leaf indices and balanced
+parentheses make this representation injective on unordered rooted labelled
+binary trees. Its size is O(m log m) per restriction root and its construction
+uses polynomial string work. Thus neither traversal nor shape equality relies
+on a fixed interpreter recursion limit.
+
 ## Status and provenance
 
 This is a candidate proof awaiting independent review. Local formula diagnostics

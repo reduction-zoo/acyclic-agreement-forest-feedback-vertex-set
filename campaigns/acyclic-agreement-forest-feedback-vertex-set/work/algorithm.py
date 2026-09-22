@@ -11,30 +11,27 @@ class Tree:
     def __init__(self, raw, labels, rho):
         nodes = {x['id']: x for x in raw['nodes']}
         self.children, self.leaf, self.parent = {}, {}, {}
-        def visit(v, parent):
+        self.children[0], self.parent[0] = [], None
+        pending = [(raw['root'], 0)]
+        while pending:
+            v, parent = pending.pop()
             index = len(self.children)
             self.children[index] = []
             self.parent[index] = parent
+            self.children[parent].append(index)
             node = nodes[v]
             if node['children']:
-                self.children[index] = [visit(c, index) for c in node['children']]
+                pending.extend((c, index) for c in reversed(node['children']))
             else:
                 self.leaf[index] = labels.index(node['label'])
-            return index
-        self.children[0], self.parent[0] = [], None
-        old = visit(raw['root'], 0)
         extra = len(self.children)
         self.children[extra], self.parent[extra] = [], 0
         self.leaf[extra] = labels.index(rho)
-        self.children[0] = [old, extra]
-        self.paths = {}
-        self.desc = {}
-        def walk(v, path):
-            self.paths[v] = path + (v,)
-            self.desc[v] = ({self.leaf[v]} if v in self.leaf else
-                            set().union(*(walk(c, path + (v,)) for c in self.children[v])))
-            return self.desc[v]
-        walk(0, ())
+        self.children[0].append(extra)
+        self.paths = {0: (0,)}
+        for v in self.children:
+            if v:
+                self.paths[v] = self.paths[self.parent[v]] + (v,)
         self.leaf_nodes = {label: v for v, label in self.leaf.items()}
 
     def lca(self, block):
@@ -47,12 +44,16 @@ class Tree:
         for x in block:
             path = self.paths[self.leaf_nodes[x]]
             alive.update(path[path.index(root):])
-        def shape(v):
+        shapes = {}
+        for v in reversed(self.children):
+            if v not in alive:
+                continue
             if v in self.leaf:
-                return (0, self.leaf[v])
-            parts = [shape(c) for c in self.children[v] if c in alive]
-            return parts[0] if len(parts) == 1 else (1, *sorted(parts))
-        return root, alive, shape(root)
+                shapes[v] = f'L{self.leaf[v]};'
+            else:
+                parts = [shapes[c] for c in self.children[v] if c in alive]
+                shapes[v] = parts[0] if len(parts) == 1 else '(' + ''.join(sorted(parts)) + ')'
+        return root, alive, shapes[root]
 
     def triple(self, triple):
         return max(itertools.combinations(triple, 2),

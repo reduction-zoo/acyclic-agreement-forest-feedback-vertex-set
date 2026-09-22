@@ -1,0 +1,3 @@
+PASS identical caterpillars: 1 leaves, independent ids and child/node reversal, F and G
+PASS identical caterpillars: 2 leaves, independent ids and child/node reversal, F and G
+PASS identical caterpillars: 1200 leaves, independent ids and child/node reversal, F and G
